@@ -17,6 +17,7 @@
   ],
   "dependencies": {
     "polymer": "^1.8.0",
-    "d3": "^4.6.0"
+    "d3": "^4.6.0",
+    "iron-resizable-behavior": "^1.0.5"
   }
 }
