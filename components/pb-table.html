@@ -1,0 +1,68 @@
+<link rel="import" href="../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
+
+<dom-module id="pb-table">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+            table {
+                width: 100%;
+                text-align: center;
+                border-collapse: collapse;
+                border-spacing: 0;
+            }
+            th {
+                font-weight: normal;
+                background-color: #d3d3d3;
+                padding: 10px 0;
+                color: #444444;
+            }
+            tr {
+
+            }
+            td {
+                padding: 10px 0;
+                color: #333333;
+            }
+            .color-square {
+                width: 25px;
+                height: 25px;
+                margin: 0 auto;
+                border-radius: 6px;
+            }
+        </style>
+        <div id='pb-table'>
+            <table>
+                <tr>
+                    <template is="dom-repeat" items="{{headers}}">
+                        <th>{{item}}</th>
+                    </template>
+                </tr>
+                <template is="dom-repeat" items="{{data}}" as="dataArray">
+
+                        <tr>
+                            <td><div class="color-square" style$="background-color: {{dataArray.fill}};"></div></td>
+                            <td>{{dataArray.name}}</td>
+                            <td>{{dataArray.forecastedCost}}</td>
+                            <td>{{dataArray.actualCost}}</td>
+                            <td>{{dataArray.resources.length}}</td>
+                            <td>{{dataArray.projectedStartDate}}</td>
+                            <td>{{dataArray.projectedEndDate}}</td>
+
+                            <!--<template is="dom-repeat" items="{{_toArray(dataArray)}}" as="dataObj">
+                                <td>{{dataObj.value}}</td>
+                            </template>-->
+                        </tr>
+
+
+                    <!--<tr>
+                        <td>{{row.value}}</td>
+                    </tr>-->
+                </template>
+            </table>
+        </div>
+    </template>
+    <script src="pb-table.js"></script>
+
+</dom-module>
