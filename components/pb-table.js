@@ -15,10 +15,6 @@
                     type: Array,
                     observer: 'logChange',
                     notify: true
-                },
-                _formattedCurrency: {
-                    type: String,
-                    value: undefined,
                 }
             },
             observers: [
@@ -29,8 +25,10 @@
                 newValue.forEach((a) => {
                     a.forecastedCost = this._convertToCurrency(a.forecastedCost);
                     a.actualCost= this._convertToCurrency(a.actualCost);
+                    a.projectedStartDate = this._convertToDate(a.projectedStartDate);
+                    a.projectedEndDate = this._convertToDate(a.projectedEndDate);
                 });
-                console.log('new', newValue);
+                //console.log('new', newValue);
             },
             _toArray: function(obj) {
                 return Object.keys(obj).map((key) => {
@@ -55,6 +53,13 @@
                 }
                 formattedNumber = "$" + formattedNumber;
                 return formattedNumber;
+            },
+            _convertToDate: function(timestamp) {
+                let date = new Date(timestamp);
+                let month = date.getMonth() + 1;
+                let day = date.getDate();
+                let year = date.getFullYear().toString().slice(2);
+                return `${month}/${day}/${year}`;
             }
         };
         Polymer(polymerConfig);
