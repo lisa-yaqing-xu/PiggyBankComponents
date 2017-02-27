@@ -13,22 +13,22 @@
                 },
                 data: {
                     type: Array,
-                    observer: 'logChange',
+                    observer: 'onDataChange',
                     notify: true
                 }
             },
             observers: [
                 '_currencyChanged(preload, src, size)'
             ],
-            logChange: function(newValue, oldValue) {
-                console.log('new', newValue);
-                newValue.forEach((a) => {
-                    a.forecastedCost = this._convertToCurrency(a.forecastedCost);
-                    a.actualCost= this._convertToCurrency(a.actualCost);
-                    a.projectedStartDate = this._convertToDate(a.projectedStartDate);
-                    a.projectedEndDate = this._convertToDate(a.projectedEndDate);
+            onDataChange: function(newData) {
+                console.log('new', newData);
+                newData.forEach((field) => {
+                    field.formattedForecastedCost = this._convertToCurrency(field.forecastedCost);
+                    field.formattedActualCost= this._convertToCurrency(field.actualCost);
+                    field.formattedProjectedStartDate = this._convertToDate(field.projectedStartDate);
+                    field.formattedProjectedEndDate = this._convertToDate(field.projectedEndDate);
                 });
-                //console.log('new', newValue);
+                console.log('new', newData);
             },
             _toArray: function(obj) {
                 return Object.keys(obj).map((key) => {
@@ -60,6 +60,11 @@
                 let day = date.getDate();
                 let year = date.getFullYear().toString().slice(2);
                 return `${month}/${day}/${year}`;
+            },
+            _hasExceededCost(forecasted, actual) {
+                if (actual > forecasted) {
+                    return 'exceeds'
+                }
             }
         };
         Polymer(polymerConfig);

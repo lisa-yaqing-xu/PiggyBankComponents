@@ -13,16 +13,18 @@
                 border-spacing: 0;
             }
             th {
-                font-weight: normal;
+                font-family: 'CA Sans', 'Helvetica', 'sans-serif';
                 background-color: #F5F5F5;
                 padding: 10px 0;
                 color: #444444;
             }
-            tr {
-            }
             td {
+                font-family: 'CA Sans', 'Helvetica', 'sans-serif';
                 padding: 10px 0;
                 color: #333333;
+            }
+            td.exceeds {
+               color: red;
             }
             .color-square {
                 width: 25px;
@@ -43,11 +45,11 @@
                         <tr>
                             <td><div class="color-square" style$="background-color: {{dataArray.fill}};"></div></td>
                             <td>{{dataArray.name}}</td>
-                            <td>{{dataArray.forecastedCost}}</td>
-                            <td>{{dataArray.actualCost}}</td>
+                            <td>{{dataArray.formattedForecastedCost}}</td>
+                            <td class$="{{_hasExceededCost(dataArray.forecastedCost, dataArray.actualCost)}}">{{dataArray.formattedActualCost}}</td>
                             <td>{{dataArray.resources.length}}</td>
-                            <td>{{dataArray.projectedStartDate}}</td>
-                            <td>{{dataArray.projectedEndDate}}</td>
+                            <td>{{dataArray.formattedProjectedStartDate}}</td>
+                            <td>{{dataArray.formattedProjectedEndDate}}</td>
 
                             <!--<template is="dom-repeat" items="{{_toArray(dataArray)}}" as="dataObj">
                                 <td>{{dataObj.value}}</td>
