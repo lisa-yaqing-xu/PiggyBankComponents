@@ -1,0 +1,41 @@
+<link rel="import" href="../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
+
+<dom-module id="pb-card">
+    <template>
+        <style>
+
+            :host {
+                display: block;
+            }
+
+            #pb-card {
+                font-family: 'CA Sans', 'Helvetica', 'sans-serif';
+                font-weight: 900;
+                text-align: center;
+                background-color: #FFFFFF;
+                margin: 0;
+                padding: 0;
+                float:left;
+                display:inline-block;
+                width: 100%;
+            }
+
+            #pb-card h1 {
+                font-size: 5em;
+                margin-bottom: 0;
+            }
+
+            #pb-card p {
+                margin-top: 0;
+                font-size: 1.5em;
+                color: #7A7A88;
+            }
+
+        </style>
+        <div id='pb-card'>
+            <h1>{{_formattedCost}}</h1>
+            <p>{{label}}</p>
+        </div>
+    </template>
+    <script src="pb-card.js"></script>
+</dom-module>
