@@ -1,0 +1,242 @@
+<script>
+    const PBProjectWidgetTestDataFaker = {};
+    
+    (function(){
+        class DateService {
+            constructor() {
+                this.today = Number(new Date());
+                this.day = 1000 * 60 * 60 * 24;
+            }
+        }
+        var pbDateService = new DateService();
+
+        class Utils {
+            constructor() { }
+            generateHexColor() {
+                let r = this.generateColorHex();
+                let g = this.generateColorHex();
+                let b = this.generateColorHex();
+                return `#${r}${g}${b}`;
+            }
+
+            generateRandomInt(num1, num2) {
+                let min = Math.min(num1, num2);
+                let max = Math.max(num1, num2);
+                return min + Math.floor(Math.random() * (max - min + 1));
+            }
+
+            generateColorHex() {
+                let rand = this.generateRandomInt(0, 255);
+                let hex = rand.toString(16);
+                if (hex.length < 2) hex = `0${hex}`;
+                return hex;
+            }
+        }
+        var pbUtils = new Utils();
+
+        class FakeDataService {
+
+            constructor() {
+                this.minTimeInPast = pbDateService.day * 30;
+            }
+
+            generateStore(amount, store = []) {
+                for (let i = 0; i < amount; i++) {
+                    let newFakeData = this.generateNewTimeSeriesData();
+                    store.push(newFakeData)
+                }
+                return store;
+            }
+
+            generateEndDate(timeFromToday, startDate) {
+                let bufferPeriod = this.getBufferPeriod();
+                bufferPeriod = (Math.random() > .8) ? bufferPeriod * 3 : bufferPeriod;
+                let endDate = Math.random() * (timeFromToday);
+                return startDate + Math.round(endDate) + bufferPeriod;
+            }
+
+            generateTimeFromToday() {
+                return this.minTimeInPast + Math.random() * (pbDateService.day * 365 - this.minTimeInPast);
+            }
+
+            generateNewTimeSeriesData() {
+                let id = this.generateNewId();
+                let timeFromToday = this.generateTimeFromToday();
+                timeFromToday = Math.round(timeFromToday);
+
+                let startDate = pbDateService.today - timeFromToday;
+                let projectedStartDate = (Math.random() > .8) ? startDate : startDate - this.getBufferPeriod();
+                let projectedEndDate = this.generateEndDate(timeFromToday, startDate);
+                let realEndDate = this.generateEndDate(timeFromToday, startDate);
+                realEndDate = (realEndDate > pbDateService.today) ? null : realEndDate; //make sure real end date is not > today
+
+                let {forecastedMoney, actualMoney} = this.generateMoney();
+
+                return {
+                    id: id,
+                    name: id,
+                    projectedStartDate: projectedStartDate,
+                    realStartDate: startDate,
+                    projectedEndDate: projectedEndDate,
+                    realEndDate: realEndDate,
+                    forecastedCost: forecastedMoney,
+                    actualCost: actualMoney,
+                    numPeople: pbUtils.generateRandomInt(1, 10),
+                    fill: pbUtils.generateHexColor()
+                }
+            }
+
+            getBufferPeriod() {
+                return Math.floor(Math.random() * this.minTimeInPast);
+            }
+
+            // test method. will have an actual id related to the project in the real thing
+            generateNewId() {
+                return `project#${Math.round(Math.random() * 9007199254740991)}`
+            }
+
+            generateMoney() {
+                let forecasted = Math.round(5000 + Math.random() * 100000);
+                let difference = Math.round(Math.random() * forecasted / 2);
+                let direction = (Math.random() < .5) ? -1 : 1;
+                let actual = forecasted + direction * difference;
+                return {
+                    forecastedMoney: forecasted,
+                    actualMoney: actual
+                };
+            }
+
+
+        }
+        PBProjectWidgetTestDataFaker.utils = pbUtils;
+        PBProjectWidgetTestDataFaker.dateService = pbDateService;
+        PBProjectWidgetTestDataFaker.fakeDataGenerator = new FakeDataService();
+
+    })();
+    
+    (function(){
+        PBProjectWidgetTestDataFaker.projectData = 
+        [
+            {
+                "id": "project#4158261241361190",
+                "name": "project#4158261241361190",
+                "projectedStartDate": 1458975342788,
+                "realStartDate": 1458975342788,
+                "projectedEndDate": 1466719463299,
+                "realEndDate": 1463467664844,
+                "forecastedCost": 12358,
+                "actualCost": 11502,
+                "numPeople": 7,
+                "fill": "#43ceb8"
+            },
+            {
+                "id": "project#1472633946606760",
+                "name": "project#1472633946606760",
+                "projectedStartDate": 1456023381063,
+                "realStartDate": 1456795085550,
+                "projectedEndDate": 1467161937777,
+                "realEndDate": 1471619728944,
+                "forecastedCost": 28011,
+                "actualCost": 18065,
+                "numPeople": 9,
+                "fill": "#e48603"
+            },
+            {
+                "id": "project#6775275197775275",
+                "name": "project#6775275197775275",
+                "projectedStartDate": 1465838199445,
+                "realStartDate": 1466399568291,
+                "projectedEndDate": 1466970092557,
+                "realEndDate": 1471859354020,
+                "forecastedCost": 65944,
+                "actualCost": 57901,
+                "numPeople": 1,
+                "fill": "#4d11e2"
+            },
+            {
+                "id": "project#590172788536588",
+                "name": "project#590172788536588",
+                "projectedStartDate": 1462734396807,
+                "realStartDate": 1463304277229,
+                "projectedEndDate": 1473075195259,
+                "realEndDate": 1471913560246,
+                "forecastedCost": 61847,
+                "actualCost": 87945,
+                "numPeople": 10,
+                "fill": "#f12585"
+            },
+            {
+                "id": "project#8581388237828389",
+                "name": "project#8581388237828389",
+                "projectedStartDate": 1465073121393,
+                "realStartDate": 1466868043402,
+                "projectedEndDate": 1467103225339,
+                "realEndDate": 1475202232497,
+                "forecastedCost": 23312,
+                "actualCost": 33357,
+                "numPeople": 6,
+                "fill": "#3f91b9"
+            },
+            {
+                "id": "project#2247458851652",
+                "name": "project#2247458851652",
+                "projectedStartDate": 1458211974461,
+                "realStartDate": 1459647543625,
+                "projectedEndDate": 1479190360613,
+                "realEndDate": 1479309029329,
+                "forecastedCost": 68395,
+                "actualCost": 39566,
+                "numPeople": 5,
+                "fill": "#8b9356"
+            },
+            {
+                "id": "project#6439588556427923",
+                "name": "project#6439588556427923",
+                "projectedStartDate": 1482622467181,
+                "realStartDate": 1483503951003,
+                "projectedEndDate": 1487779793475,
+                "realEndDate": 1485687787376,
+                "forecastedCost": 53282,
+                "actualCost": 59470,
+                "numPeople": 9,
+                "fill": "#0fde86"
+            },
+            {
+                "id": "project#8919861442333353",
+                "name": "project#8919861442333353",
+                "projectedStartDate": 1479376360129,
+                "realStartDate": 1481871543538,
+                "projectedEndDate": 1484523788291,
+                "realEndDate": 1484484741276,
+                "forecastedCost": 45216,
+                "actualCost": 31854,
+                "numPeople": 3,
+                "fill": "#63ded5"
+            },
+            {
+                "id": "project#7752326932319299",
+                "name": "project#7752326932319299",
+                "projectedStartDate": 1469805224722,
+                "realStartDate": 1470863889957,
+                "projectedEndDate": 1472204424291,
+                "realEndDate": 1480302080330,
+                "forecastedCost": 32224,
+                "actualCost": 20079,
+                "numPeople": 9,
+                "fill": "#fa8cd8"
+            },
+            {
+                "id": "project#1012637153221128",
+                "name": "project#1012637153221128",
+                "projectedStartDate": 1469680465189,
+                "realStartDate": 1471618355560,
+                "projectedEndDate": 1478601759006,
+                "realEndDate": 1477354080839,
+                "forecastedCost": 13555,
+                "actualCost": 8458,
+                "numPeople": 6,
+                "fill": "#2fdc38"
+            }]
+    })();
+
+</script>

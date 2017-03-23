@@ -1,0 +1,50 @@
+<link rel="import" href="../testing-data/pb-data-faker.html">
+<link rel="import" href="../components/pb-time-series-chart.html">
+<link rel="import" href="../components/pb-calendar.html">
+
+<dom-module id="pb-components-demo">
+
+    <template>
+        <style>
+             :host {
+                display: block;
+            }
+            
+            text {
+                font-family: 'CA Sans', 'Helvetica', 'sans-serif';
+            }
+        </style>
+        <button on-tap='generateNewChartData'>Change Data</button>
+        <pb-time-series-chart data={{chartData}}></pb-time-series-chart>
+        <pb-calendar month-timestamp={{monthTimestamp}}></pb-calendar>
+    </template>
+    <script>
+        (function () {
+            'use strict';
+            
+            const pbFaker = PBProjectWidgetTestDataFaker;
+
+            let polymerConfig = {
+                is: 'pb-components-demo',
+                properties: {
+                    chartData: {
+                        type: Array,
+                        notify: true,
+                        value: pbFaker.fakeDataGenerator.generateStore(10)
+                    },
+                    monthTimestamp: {
+                        type: Number,
+                        notify: true,
+                        value: 1458975342788
+                    }
+                    
+                },
+                generateNewChartData: function(){
+                    this.chartData = pbFaker.fakeDataGenerator.generateStore(10);
+                }
+            };
+            Polymer(polymerConfig);
+        })();
+    </script>
+
+</dom-module>

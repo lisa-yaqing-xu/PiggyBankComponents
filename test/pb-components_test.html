@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+  <title>Piggy Bank Components Test</title>
+
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+  <script src="../../test-fixture/test-fixture-mocha.js"></script>
+
+  <link rel="import" href="../../test-fixture/test-fixture.html">
+
+  <link rel="import" href="../components/pb-card.html">
+  <link rel="import" href="../components/pb-time-series-chart.html">
+  <link rel="import" href="../testing-data/pb-data-faker.html">
+
+</head>
+
+<body>
+  <test-fixture id="pb-card-test">
+    <template is="dom-template">
+      <pb-card cost={{cost}} label={{label}}></pb-card>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="pb-chart-test">
+    <template is="dom-template">
+      <pb-time-series-chart data={{data}}></pb-time-series-chart>
+    </template>
+  </test-fixture>
+
+  <script>
+    (function () {
+      'use strict';
+
+      suite('pb-card', function () {
+        var element;
+        var elementData = {cost: 3000, label: 'testLabel'};
+        setup(function () {
+          element = fixture('pb-card-test', elementData);
+        });
+        test('instantiating the element works', function () {
+          assert.equal(element.is, 'pb-card');
+        });
+        test('the element cost is passed in correctly', function () {
+          assert.equal(element.cost, elementData.cost);
+        });
+        test('the element label is passed in correctly', function () {
+          assert.equal(element.label, elementData.label);
+        });
+        test('the element cost display is parsing correctly', function () {
+          assert.equal(element.displayCost(element.cost), '$3,000');
+          assert.equal(element.displayCost(256), '$256');
+          assert.equal(element.displayCost(123456789.1), '$123,456,789.10');
+        });
+      });
+
+      suite('pb-time-series-chart', function () {
+        var element;
+        var fakeProjectData = PBProjectWidgetTestDataFaker.projectData;
+        setup(function () {
+          element = fixture('pb-chart-test', {data: fakeProjectData});
+        });
+        test('instantiating the element works', function () {
+          assert.equal(element.is, 'pb-time-series-chart');
+        });
+        test('there is a viewport', function(){
+          var viewport = element.getViewPort();
+          assert.isNotNull(viewport);
+          console.log(viewport);
+        });
+        test('an svg is generated',function(){
+          var svg = element.$$('svg');
+          assert.isNotNull(svg);
+        });
+        test('there is a pattern definition svg dom object for the diagonal pattern', function(){
+          var pattern = element.$$('pattern#diagonalPattern');
+          assert.isNotNull(pattern);
+        })
+      });
+    })();
+      /*
+      */
+  </script>
+</body>
+
+</html>
