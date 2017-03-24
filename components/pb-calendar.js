@@ -12,7 +12,8 @@
             },
             selectedDate: {
                 type: Object,
-                notify: true
+                notify: true,
+                value: null 
             },
             dates: {
                 type: Array,
@@ -66,7 +67,7 @@
                 col: col,
                 date: date,
                 display: true,
-                class: 'active',
+                class: `active${(isSameDate(date, this.selectedDate)?' selected':'')}`,
                 style: `left: ${target.offsetLeft - 2}px; top: ${target.offsetTop - 1}px;`
             })
         }
@@ -80,18 +81,19 @@
         if (date) {
             this.set('selectedDateIndex', { row: row, col: col });
             this.set('selectedDate', date);
+            this.set('hoverData.class', 'active selected')
         } else {
             this.set('selectedDateIndex', { row: -1, col: -1 });
             this.set('selectedDate', null);
         }
-        console.log(this.selectedDate, this.selectedDateIndex)
-        console.log('dateIsSelected')
     }
-    function getCalendarClass(dateObj, row, col) {
-        console.log('gettingClass');
-        let inactiveDateClass = dateObj ? '' : 'inactive';
-        let selectedDateClass = (this.selectedDateIndex.row === row && this.selectedDateIndex.col === col) ? 'selected': ''
-        return inactiveDateClass;
+    function getCalendarClass(date, selectedDate) {
+        if(!date){
+            return 'inactive'
+        } else {
+
+            return isSameDate(date, selectedDate)? 'selected' : ''
+        }
     }
     /*
         OBSERVERS
@@ -169,5 +171,10 @@
             col: col,
             date: dateArr[row][col]
         };
+    }
+
+    function isSameDate(date1, date2){
+        if(!date1 || !date2) return false;
+        return date1.getTime() === date2.getTime();
     }
 })();

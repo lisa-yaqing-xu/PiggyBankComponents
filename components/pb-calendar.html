@@ -16,7 +16,7 @@
                 font-size: 11px;
                 padding: 3px;
             }
-            table.pb-calendar-body td.selected{
+            table.pb-calendar-body td.selected, #pb-calendar-hover-display.selected{
                 background: #82a;
                 color: #fff;
             }
@@ -46,9 +46,8 @@
                 <template is='dom-repeat' items={{dates}} as="week" index-as="rowIndex">
                     <tr>
                         <template is='dom-repeat' items={{week}} as="day" index-as="colIndex">
-                            <td class$='{{getCalendarClass(day, rowIndex, colIndex)}}' 
+                            <td class$='{{getCalendarClass(day, selectedDate)}}' 
                                 on-mouseover="onDateHover" on-mouseout="removeHover"
-                                
                                 data-row$="{{rowIndex}}" data-col$="{{colIndex}}">
                                 {{getCalendarVal(day)}}
                             </td>
