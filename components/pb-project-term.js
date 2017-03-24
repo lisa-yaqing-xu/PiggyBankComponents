@@ -17,6 +17,11 @@
             },
             formattedEndDate: {
                 type: String
+            },
+            selectedDateRange:{
+                type: Object,
+                value: {},
+                notify: true
             }
 
         },
@@ -40,7 +45,9 @@
                 day = `0${day}`;
             }
             console.log(`${month} ${day}, ${year} `);
-            this.set('formattedStartDate', `${month} ${day}, ${year} `)
+            this.set('formattedStartDate', `${month} ${day}, ${year} `);
+            this.selectedDateRange.startDate = timestamp;            
+            this.selectedDateRange = Object.assign({},this.selectedDateRange);
         },
         _selectedEndDateChange: function(timestamp) {
             let date = new Date(timestamp);
@@ -51,7 +58,9 @@
                 day = `0${day}`;
             }
             console.log(`${month} ${day}, ${year} `);
-            this.set('formattedEndDate', `${month} ${day}, ${year} `)
+            this.set('formattedEndDate', `${month} ${day}, ${year} `);
+            this.selectedDateRange.endDate = timestamp;            
+            this.selectedDateRange = Object.assign({},this.selectedDateRange);
         }
 
     };

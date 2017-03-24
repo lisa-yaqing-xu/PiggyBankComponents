@@ -18,7 +18,7 @@
         <button on-tap='generateNewChartData'>Change Data</button> <button on-tap='generatePlaceHolderData'>Create Simulated Placeholder</button>
         <pb-time-series-chart data={{chartData}} add-proj-mode=true placeholder-dates={{placeholderData}}></pb-time-series-chart>
         <pb-calendar month-timestamp={{monthTimestamp}}></pb-calendar>
-        <pb-project-term></pb-project-term>
+        <pb-project-term selected-date-range='{{placeholderData}}'></pb-project-term>
     </template>
     <script>
         (function () {
