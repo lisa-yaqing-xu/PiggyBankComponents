@@ -2,15 +2,52 @@
     <template>
         <style>
             :host {
-                display: inline-block;
+                display: block;
                 font-family: 'CA Sans', 'Helvetica', 'sans-serif';
                 position: relative;
             }
+
+            .pb-project-term-wrapper {
+                position: relative;
+            }
+
+            .pb-project-term-input {
+                    height: 25px;                 
+                    border: none;
+                    border: solid 1px #EAE8F0;
+                    border-radius: 3px;           
+                    outline: none;
+                    padding-left: 10px;
+            }
+
+            .pb-project-term-input:focus {
+                border-color: #9D23FF
+            }
+
+            .pb-project-term-input::-webkit-input-placeholder { 
+                font-family: 'CA Sans', 'Helvetica', 'sans-serif';
+            }
+
+            .pb-project-term-input.end {
+                margin-left: 16px;
+            }
+
+            .pb-input-separator {
+                box-sizing: border-box;
+                display: inline-block;
+                width: 12px; 
+                height: 4px; 
+                background-color: #343434;
+                position: absolute;
+                top: 45%;
+            }
+
         </style>
 
         <div class='pb-project-term-wrapper'>
-         <input type="text" class="pb-project-term-input" />
-        
+         <input type="text" class="pb-project-term-input" placeholder="Start Date" />
+         <div class="pb-input-separator"></div>
+        <input type="text" class="pb-project-term-input end" placeholder="End Date" />
         </div>
        
     </template>
