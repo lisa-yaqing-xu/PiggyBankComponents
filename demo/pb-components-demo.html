@@ -1,6 +1,7 @@
 <link rel="import" href="../testing-data/pb-data-faker.html">
 <link rel="import" href="../components/pb-time-series-chart.html">
 <link rel="import" href="../components/pb-calendar.html">
+<link rel="import" href="../components/pb-project-term.html">
 
 <dom-module id="pb-components-demo">
 
@@ -17,6 +18,7 @@
         <button on-tap='generateNewChartData'>Change Data</button>
         <pb-time-series-chart data={{chartData}}></pb-time-series-chart>
         <pb-calendar month-timestamp={{monthTimestamp}}></pb-calendar>
+        <pb-project-term></pb-project-term>
     </template>
     <script>
         (function () {
