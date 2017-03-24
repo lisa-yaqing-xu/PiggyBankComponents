@@ -14,18 +14,30 @@
             data: {
                 type: Array,
                 observer: '_dataChanged',
-                notify: true
+                notify: true,
+                value: []
             },
             d3Cache: {
                 type: Object,
                 value: {}
             },
-
+            placeholderDates: {
+                type: Object,
+                observer: '_placeholderChanged',
+                notify: true,
+                value: {}
+            },
+            addProjMode: {
+                type: Boolean,
+                value: false
+            },
             initialized: Boolean,
             viewport: Object,
             elementWidth: Number,
             chartViewport: Object,
-            sortedData: Object
+            sortedData: Object,
+            combinedData: Object,
+            placeholderData: Object
         },
         listeners: {
             'iron-resize': '_onIronResize'
@@ -33,27 +45,45 @@
         attached: function () {
             this.viewport = this.getViewPort();
             this.elementWidth = this.viewport.clientWidth;
-            this.sortedData = sortData(this.data);
-            this.d3Cache = init(this.viewport, this.data, this.sortedData);
+
+            this.placeholderData = transformPlaceholder(this.placeholderDates);
+            this.combinedData = combineMainAndPlaceholderData(this.combinedData, this.placeholderData)
+
+            this.sortedData = sortData(this.combinedData);
+            
+            this.d3Cache = init(this.viewport, this.combinedData, this.sortedData, this.addProjMode);
             this.initialized = true;
         },
         getViewPort: function () { return this.$$('#chart-viewport'); },
         _dataChanged: function (newData) {
-            this.sortedData = sortData(newData);
+            this.combinedData = combineMainAndPlaceholderData(newData, this.placeholderData)
+            this.sortedData = sortData(this.combinedData);
+
             if (this.initialized) {
-                update(this.d3Cache, this.viewport, newData, this.sortedData);
+                update(this.d3Cache, this.viewport, this.combinedData, this.sortedData, this.addProjMode);
+            }
+        },
+        _placeholderChanged: function (newData){
+            this.placeholderData = transformPlaceholder(newData);
+            this.combinedData = combineMainAndPlaceholderData(this.data, this.placeholderData)
+            this.sortedData = sortData(this.combinedData);
+
+            
+            if (this.initialized) {
+                update(this.d3Cache, this.viewport, this.combinedData, this.sortedData, this.addProjMode);
             }
         },
         _onIronResize: function () {
             if (this.initialized) {
-                update(this.d3Cache, this.viewport, this.data, this.sortedData);
+                update(this.d3Cache, this.viewport, this.combinedData, this.sortedData, this.addProjMode);
+
             }
         }
     }
 
     Polymer(polymerConfig);
 
-    function init(viewport, data, sortedData) {
+    function init(viewport, data, sortedData, addProjMode) {
         let chartViewport = d3.select(viewport);
         let svg = chartViewport.append('svg')
             .style('display', 'block');
@@ -73,14 +103,14 @@
 
         formatAxis(axisG, height, xAxis, xScale);
 
-        let chartG = renderElements(sortedData, xScale, renderSVG);
+        let chartG = renderElements(sortedData, xScale, renderSVG, addProjMode);
 
         return {
             svg: svg,
             renderSVG: renderSVG,
             axisG: axisG,
             chartG: chartG,
-            todayG: todayG
+            todayG: todayG,
         }
     }
 
@@ -88,7 +118,7 @@
     * update the chart to
     * @param elementCache - a cache for svg elements
     */
-    function update(elementCache, viewport, data, sortedData) {
+    function update(elementCache, viewport, data, sortedData, addProjMode) {
         // TODO: only resort data when there's a data change, and not a resize
         // should probably cache sortedData somewhere esp if we ever want transitions
         let width = viewport.clientWidth;
@@ -102,10 +132,10 @@
 
         //update chart view
         let {startCircleG, endCircleG, lineG, arrowG} = elementCache.chartG;
-        renderLines(sortedData, xScale, lineG);
-        renderStartCircles(sortedData, xScale, startCircleG);
-        renderEndCircles(sortedData, xScale, endCircleG);
-        renderArrows(sortedData, xScale, arrowG);
+        renderLines(sortedData, xScale, lineG, addProjMode);
+        renderStartCircles(sortedData, xScale, startCircleG, addProjMode);
+        renderEndCircles(sortedData, xScale, endCircleG, addProjMode);
+        renderArrows(sortedData, xScale, arrowG, addProjMode);
 
     }
     /**
@@ -141,16 +171,16 @@
      * @param renderPort
      * @returns {}
      */
-    function renderElements(sortedData, xScale, renderPort) {
+    function renderElements(sortedData, xScale, renderPort, addProjMode) {
         let lineG = renderPort.append('g');
         let startCircleG = renderPort.append('g');
         let endCircleG = renderPort.append('g');
         let arrowG = renderPort.append('g');
 
-        renderLines(sortedData, xScale, lineG);
-        renderStartCircles(sortedData, xScale, startCircleG);
-        renderEndCircles(sortedData, xScale, endCircleG);
-        renderArrows(sortedData, xScale, arrowG);
+        renderLines(sortedData, xScale, lineG, addProjMode);
+        renderStartCircles(sortedData, xScale, startCircleG, addProjMode);
+        renderEndCircles(sortedData, xScale, endCircleG, addProjMode);
+        renderArrows(sortedData, xScale, arrowG, addProjMode);
 
         return {
             startCircleG: startCircleG,
@@ -167,8 +197,8 @@
      * @param renderPort
      * @returns {Selection}
      */
-    function renderStartCircles(sortedData, xScale, renderPort) {
-        return renderCircles(sortedData, xScale, renderPort,
+    function renderStartCircles(sortedData, xScale, renderPort, addProjMode) {
+        return renderCircles(sortedData, xScale, renderPort, addProjMode,
             (data) => data.realStartDate);
     }
 
@@ -179,8 +209,8 @@
      * @param renderPort
      * @returns {Selection}
      */
-    function renderEndCircles(sortedData, xScale, renderPort) {
-        return renderCircles(sortedData, xScale, renderPort,
+    function renderEndCircles(sortedData, xScale, renderPort, addProjMode) {
+        return renderCircles(sortedData, xScale, renderPort, addProjMode,
             (data) => data.realEndDate,
             (data) => isBeforeToday(data));
     }
@@ -194,10 +224,10 @@
      * @param renderPort
      * @returns {Selection}
      */
-    function renderLines(sortedData, xScale, renderPort) {
+    function renderLines(sortedData, xScale, renderPort, addProjMode) {
         let pts = sortedData.reduce((arr, data, index) => {
             let ptsArr = data.map((timeData) => {
-                let {id, fill, projectedStartDate, realStartDate, realEndDate, projectedEndDate} = timeData;
+                let {id, fill, projectedStartDate, realStartDate, realEndDate, projectedEndDate, isPlaceholder} = timeData;
                 let solidEnd = Math.min(projectedEndDate, today);
                 if (realEndDate) solidEnd = Math.min(realEndDate, solidEnd);
 
@@ -216,7 +246,7 @@
                     greyLineEndX: (realEndDate) ? realStartDate : projectedEndDate,
                     y: index,
                     id: id,
-                    fill: fill
+                    fill: (addProjMode && !isPlaceholder)? rgbToGrayScale(fill) :fill
                 }
             });
             return arr.concat(ptsArr);
@@ -274,7 +304,7 @@
      * @param filter
      * @returns {Selection}
      */
-    function renderCircles(sortedData, xScale, renderPort, retrieveX, filter) {
+    function renderCircles(sortedData, xScale, renderPort, addProjMode ,retrieveX, filter) {
         let pts = sortedData.reduce((arr, data, index) => {
             let workingData = (filter) ? data.filter(filter) : data;
             let ptsArr = workingData.map((timeData) => {
@@ -282,7 +312,7 @@
                     x: retrieveX(timeData),
                     y: index,
                     id: timeData.id,
-                    fill: timeData.fill
+                    fill: (addProjMode && !timeData.isPlaceholder)? rgbToGrayScale(timeData.fill) : timeData.fill
                 }
             });
             return arr.concat(ptsArr);
@@ -310,7 +340,7 @@
      * @param renderPort
      * @returns {Selection}
      */
-    function renderArrows(sortedData, xScale, renderPort) {
+    function renderArrows(sortedData, xScale, renderPort, addProjMode) {
         let pts = sortedData.reduce((arr, data, index) => {
             let ptsArr = data.filter((data) => !data.realEndDate)
                 .map((timeData) => {
@@ -318,7 +348,7 @@
                         x: today,
                         y: index,
                         id: timeData.id,
-                        fill: timeData.fill
+                        fill: (addProjMode && !timeData.isPlaceholder)? rgbToGrayScale(timeData.fill) : timeData.fill
                     }
                 });
             return arr.concat(ptsArr);
@@ -493,4 +523,82 @@
         if (month < 7) return 31 - monthEven;
         else return 30 + monthEven;
     }
+
+    function rgbToGrayScale(rgb){
+        let {r, g, b} = separateRGB(rgb);
+        let rInt = parseInt(r, 16);
+        let gInt = parseInt(g, 16);
+        let bInt = parseInt(b, 16);
+
+        let x = 0.299 * rInt + 0.587 * gInt + 0.114 * bInt;
+        let xHex = Math.floor(x).toString(16);
+        if(xHex.length === 1) xHex = [0,xHex].join('');
+        return `#${duplicateString(xHex, 3)}`;
+    }
+
+    function separateRGB(rgb){
+        let strippedRGB = (rgb.charAt(0)==='#')?rgb.substring(1,rgb.length):rgb;
+        let r, g, b;
+        if(strippedRGB.length === 6){
+            r = strippedRGB.substring(0,2);
+            g = strippedRGB.substring(2,4);
+            b = strippedRGB.substring(4,6);
+
+        } else if (strippedRGB.length === 3){
+            r = duplicateString(strippedRGB.charAt(0));
+            g = duplicateString(strippedRGB.charAt(1));
+            b = duplicateString(strippedRGB.charAt(2));
+        } else {
+            throw "invalid color format"
+        }
+        return {r, g, b}
+        
+    }
+
+    function duplicateString(str, times = 2){
+        let dupeArr = [];
+        for(let i = 0; i < times; i++){
+            dupeArr.push(str);
+        }
+        return dupeArr.join('');
+    }
+
+    function transformPlaceholder(data){
+        let transformedData = {};
+        if(data.startDate){
+            transformedData.projectedStartDate = data.startDate;
+            transformedData.realStartDate = data.startDate;
+            if(data.endDate){
+                transformedData.projectedEndDate = data.endDate;
+                transformedData.realEndDate = data.endDate;
+            } else {
+                transformedData.projectedEndDate = data.startDate;
+                transformedData.realEndDate = data.startDate;
+            }
+
+        } else {
+            if(data.endDate){
+                transformedData.projectedEndDate = data.endDate;
+                transformedData.realEndDate = data.endDate;
+                transformedData.projectedStartDate = data.endDate;
+                transformedData.realStartDate = data.endDate;
+            }
+
+            else {return null;}
+        }
+        transformedData.id = 'placeholder'
+        transformedData.fill = '#fa4659';
+        transformedData.isPlaceholder = true;
+        return transformedData;
+    }
+
+    function combineMainAndPlaceholderData(mainData, placeholderData){
+        if(placeholderData){
+            let mainDataCp = mainData.slice();
+            mainDataCp.push(placeholderData);
+            return mainDataCp;
+        }
+        return  mainData;
+    }
+
 })();

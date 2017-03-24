@@ -14,8 +14,8 @@
                 font-family: 'CA Sans', 'Helvetica', 'sans-serif';
             }
         </style>
-        <button on-tap='generateNewChartData'>Change Data</button>
-        <pb-time-series-chart data={{chartData}}></pb-time-series-chart>
+        <button on-tap='generateNewChartData'>Change Data</button> <button on-tap='generatePlaceHolderData'>Create Simulated Placeholder</button>
+        <pb-time-series-chart data={{chartData}} add-proj-mode=true placeholder-dates={{placeholderData}}></pb-time-series-chart>
         <pb-calendar month-timestamp={{monthTimestamp}}></pb-calendar>
     </template>
     <script>
@@ -36,11 +36,23 @@
                         type: Number,
                         notify: true,
                         value: 1458975342788
+                    },
+                    placeholderData:{
+                        type: Object,
+                        notify: true,
+                        value: {}
                     }
                     
                 },
                 generateNewChartData: function(){
                     this.chartData = pbFaker.fakeDataGenerator.generateStore(10);
+                },
+                generatePlaceHolderData: function(){
+                    let newData =  pbFaker.fakeDataGenerator.generateStore(1)[0];
+                    this.set('placeholderData',{
+                        startDate: newData.projectedStartDate,
+                        endDate: newData.projectedEndDate,
+                    });
                 }
             };
             Polymer(polymerConfig);
