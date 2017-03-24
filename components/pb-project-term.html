@@ -1,0 +1,97 @@
+<link rel="import" href="pb-calendar.html">
+<dom-module id="pb-project-term">
+    <template>
+        <style>
+            :host {
+                display: block;
+                font-family: 'CA Sans', 'Helvetica', 'sans-serif';
+                position: relative;
+            }
+
+            .pb-project-term-wrapper {
+                position: relative;
+            }
+
+            .pb-project-term-input {
+                    height: 25px;                 
+                    border: none;
+                    border: solid 1px #EAE8F0;
+                    border-radius: 3px;           
+                    outline: none;
+                    padding-left: 10px;
+            }
+
+            .pb-project-term-input:focus {
+                border-color: #9D23FF
+            }
+
+            .pb-project-term-input::-webkit-input-placeholder { 
+                font-family: 'CA Sans', 'Helvetica', 'sans-serif';
+            }
+
+            .pb-project-term-input.end {
+                margin-left: 16px;
+            }
+
+            .pb-input-separator {
+                box-sizing: border-box;
+                display: inline-block;
+                width: 12px; 
+                height: 4px; 
+                background-color: #343434;
+                position: absolute;
+                top: 45%;
+            }
+
+            #start-calendar, #end-calendar {
+                display: none;
+                outline: none;
+            }
+
+            #end-calendar {
+                margin-top:  150px;
+            }
+        </style>
+
+        <div class='pb-project-term-wrapper'>
+             <input 
+                type="text" 
+                id="start"
+                class="pb-project-term-input" 
+                placeholder="Start Date" 
+                on-tap="handleTap"
+                value={{formattedStartDate}}
+            />
+            
+            <div class="pb-input-separator"></div>
+    
+            <input 
+                type="text" 
+                id="end"
+                class="pb-project-term-input end" 
+                placeholder="End Date" 
+                on-tap="handleTap"
+                value={{formattedEndDate}} />
+        
+            <pb-calendar 
+                id="start-calendar" 
+                month-timestamp=1458975342788
+                selected-date="{{selectedStartDate}}"
+                on-blur="handleOnBlur"
+                tabindex="1">
+            </pb-calendar>
+            
+            <pb-calendar 
+                id="end-calendar" 
+                month-timestamp=1458975342788
+                selected-date="{{selectedEndDate}}"
+                on-blur="handleOnBlur"
+                tabindex="1">
+            </pb-calendar>
+
+        </div>
+           
+    </template>
+    <script src="pb-project-term.js"></script>
+</dom-module>
+
