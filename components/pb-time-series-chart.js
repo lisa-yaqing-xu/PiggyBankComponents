@@ -5,105 +5,123 @@
     let day = 1000 * 60 * 60 * 24;
     let legendHeight = 30;
 
-    let polymerConfig = {
-        is: 'pb-time-series-chart',
-        behaviors: [
-            Polymer.IronResizableBehavior
-        ],
-        properties: {
-            data: {
-                type: Array,
-                observer: '_dataChanged',
-                notify: true,
-                value: []
-            },
-            d3Cache: {
-                type: Object,
-                value: {}
-            },
-            placeholderDates: {
-                type: Object,
-                observer: '_placeholderChanged',
-                notify: true,
-                value: {}
-            },
-            addProjMode: {
-                type: Boolean,
-                value: false
-            },
-            initialized: Boolean,
-            viewport: Object,
-            elementWidth: Number,
-            chartViewport: Object,
-            sortedData: Object,
-            combinedData: Object,
-            placeholderData: Object
-        },
-        listeners: {
-            'iron-resize': '_onIronResize'
-        },
-        attached: function () {
-            this.viewport = this.getViewPort();
-            this.elementWidth = this.viewport.clientWidth;
+    class PBTimeSeriesChart extends Polymer.Element {
+        constructor(){
+            super();
+        }
+        static get is() {
+            return 'pb-time-series-chart';
+        }
 
-            this.placeholderData = transformPlaceholder(this.placeholderDates);
-            this.combinedData = combineMainAndPlaceholderData(this.combinedData, this.placeholderData)
-
-            this.sortedData = sortData(this.combinedData);
-            
-            this.d3Cache = init(this.viewport, this.combinedData, this.sortedData, this.addProjMode);
-            this.initialized = true;
-        },
-        getViewPort: function () { return this.$$('#chart-viewport'); },
-        _dataChanged: function (newData) {
-            this.combinedData = combineMainAndPlaceholderData(newData, this.placeholderData)
-            this.sortedData = sortData(this.combinedData);
-
-            if (this.initialized) {
-                update(this.d3Cache, this.viewport, this.combinedData, this.sortedData, this.addProjMode);
+        static get properties() {
+            return {
+                data: {
+                    type: Array,
+                    //observer: '_dataChanged',
+                    notify: true,
+                    value: []
+                },
+                d3Cache: {
+                    type: Object,
+                    value: {}
+                },
+                placeholderDates: {
+                    type: Object,
+                    //observer: '_placeholderChanged',
+                    notify: true,
+                    value: {}
+                },
+                addProjMode: {
+                    type: Boolean,
+                    value: false
+                },
+                initialized: Boolean,
+                viewport: Object,
+                elementWidth: Number,
+                chartViewport: Object,
+                sortedData: Object,
+                combinedData: Object,
+                placeholderData: Object
             }
-        },
-        _placeholderChanged: function (newData){
-            this.placeholderData = transformPlaceholder(newData);
-            this.combinedData = combineMainAndPlaceholderData(this.data, this.placeholderData)
-            this.sortedData = sortData(this.combinedData);
+        }
 
-            
-            if (this.initialized) {
-                update(this.d3Cache, this.viewport, this.combinedData, this.sortedData, this.addProjMode);
+        static get observers() {
+            return [
+                '_dataChanged(data)',
+                '_placeholderChanged(placeholderDates)'
+            ]
+        }
+
+        static get listeners() {
+            return {
+                'iron-resize': '_onIronResize'
             }
-        },
-        _onIronResize: function () {
+        }
+        connectedCallback() {
+            Polymer.RenderStatus.beforeNextRender(this, function () {
+                this.viewport = this.getViewPort();
+                this.elementWidth = this.viewport.clientWidth;
+
+                this.placeholderData = this.transformPlaceholder(this.placeholderDates);
+                this.combinedData = this.combineMainAndPlaceholderData(this.combinedData, this.placeholderData)
+
+                this.sortedData = this.sortData(this.combinedData);
+
+                this.d3Cache = this.init(this.viewport, this.combinedData, this.sortedData, this.addProjMode);
+                this.initialized = true;
+            });
+        }
+
+        getViewPort() { return this.shadowRoot.getElementById('chart-viewport') }
+
+        _dataChanged(newData) {
+            this.combinedData = this.combineMainAndPlaceholderData(newData, this.placeholderData)
+            this.sortedData = this.sortData(this.combinedData);
+
             if (this.initialized) {
-                update(this.d3Cache, this.viewport, this.combinedData, this.sortedData, this.addProjMode);
+                this.update(this.d3Cache, this.viewport, this.combinedData, this.sortedData, this.addProjMode);
+            }
+        }
+
+        _placeholderChanged(newData) {
+            this.placeholderData = this.transformPlaceholder(newData);
+            this.combinedData = this.combineMainAndPlaceholderData(this.data, this.placeholderData)
+            this.sortedData = this.sortData(this.combinedData);
+
+
+            if (this.initialized) {
+                this.update(this.d3Cache, this.viewport, this.combinedData, this.sortedData, this.addProjMode);
+            }
+        }
+
+        _onIronResize() {
+            if (this.initialized) {
+                this.update(this.d3Cache, this.viewport, this.combinedData, this.sortedData, this.addProjMode);
 
             }
         }
-    }
 
-    Polymer(polymerConfig);
-
-    function init(viewport, data, sortedData, addProjMode) {
+    init(viewport, data, sortedData, addProjMode) {
         let chartViewport = d3.select(viewport);
         let svg = chartViewport.append('svg')
             .style('display', 'block');
         let width = viewport.clientWidth;
         let height = sortedData.length * 20 + 50;
-        setViewPortSVGSize(svg, width, height);
+        this.setViewPortSVGSize(svg, width, height);
 
-        createDiagonalPattern(svg, 'diagonalPattern');
+        this.createDiagonalPattern(svg, 'diagonalPattern');
         let renderSVG = svg.append('g');
 
-        let {axis: xAxis, scale: xScale} = createXAxis(data, width);
+        let { axis: xAxis, scale: xScale } = this.createXAxis(data, width);
 
         let todayG = renderSVG.append('g');
-        renderTodayMarker(todayG, xScale, height);
+        this.renderTodayMarker(todayG, xScale, height);
         let axisG = renderSVG.append('g')
             .attr('class', 'x axis');
 
-        formatAxis(axisG, height, xAxis, xScale);
+        this.formatAxis(axisG, height, xAxis, xScale);
 
-        let chartG = renderElements(sortedData, xScale, renderSVG, addProjMode);
+        let chartG = this.renderElements(sortedData, xScale, renderSVG, addProjMode);
 
         return {
             svg: svg,
@@ -118,24 +136,24 @@
     * update the chart to
     * @param elementCache - a cache for svg elements
     */
-    function update(elementCache, viewport, data, sortedData, addProjMode) {
+    update(elementCache, viewport, data, sortedData, addProjMode) {
         // TODO: only resort data when there's a data change, and not a resize
         // should probably cache sortedData somewhere esp if we ever want transitions
         let width = viewport.clientWidth;
         let height = sortedData.length * 20 + 50;
-        setViewPortSVGSize(elementCache.svg, width, height);
+        this.setViewPortSVGSize(elementCache.svg, width, height);
 
-        let {axis: xAxis, scale: xScale} = createXAxis(data, viewport.clientWidth);
-        renderTodayMarker(elementCache.todayG, xScale, height);
-        formatAxis(elementCache.axisG, height, xAxis, xScale);
+        let { axis: xAxis, scale: xScale } = this.createXAxis(data, viewport.clientWidth);
+        this.renderTodayMarker(elementCache.todayG, xScale, height);
+        this.formatAxis(elementCache.axisG, height, xAxis, xScale);
 
 
         //update chart view
-        let {startCircleG, endCircleG, lineG, arrowG} = elementCache.chartG;
-        renderLines(sortedData, xScale, lineG, addProjMode);
-        renderStartCircles(sortedData, xScale, startCircleG, addProjMode);
-        renderEndCircles(sortedData, xScale, endCircleG, addProjMode);
-        renderArrows(sortedData, xScale, arrowG, addProjMode);
+        let { startCircleG, endCircleG, lineG, arrowG } = elementCache.chartG;
+        this.renderLines(sortedData, xScale, lineG, addProjMode);
+        this.renderStartCircles(sortedData, xScale, startCircleG, addProjMode);
+        this.renderEndCircles(sortedData, xScale, endCircleG, addProjMode);
+        this.renderArrows(sortedData, xScale, arrowG, addProjMode);
 
     }
     /**
@@ -143,7 +161,7 @@
     * @param data
     * @returns {Array<Array<projectData>>}
     */
-    function sortData(data) {
+    sortData(data) {
         let sortedDataSet = [];
         let sortedData = data.slice().sort((a, b) => {
             let aEndDate = a.realEndDate || a.projectedEndDate;
@@ -151,7 +169,7 @@
             return Number(aEndDate > bEndDate);
         });
         sortedData.forEach((timeData) => {
-            let insertIndex = getFittingSlot(timeData, sortedDataSet);
+            let insertIndex = this.getFittingSlot(timeData, sortedDataSet);
             if (insertIndex === -1) {
                 let newRow = [];
                 newRow.push(timeData);
@@ -171,16 +189,16 @@
      * @param renderPort
      * @returns {}
      */
-    function renderElements(sortedData, xScale, renderPort, addProjMode) {
+    renderElements(sortedData, xScale, renderPort, addProjMode) {
         let lineG = renderPort.append('g');
         let startCircleG = renderPort.append('g');
         let endCircleG = renderPort.append('g');
         let arrowG = renderPort.append('g');
 
-        renderLines(sortedData, xScale, lineG, addProjMode);
-        renderStartCircles(sortedData, xScale, startCircleG, addProjMode);
-        renderEndCircles(sortedData, xScale, endCircleG, addProjMode);
-        renderArrows(sortedData, xScale, arrowG, addProjMode);
+        this.renderLines(sortedData, xScale, lineG, addProjMode);
+        this.renderStartCircles(sortedData, xScale, startCircleG, addProjMode);
+        this.renderEndCircles(sortedData, xScale, endCircleG, addProjMode);
+        this.renderArrows(sortedData, xScale, arrowG, addProjMode);
 
         return {
             startCircleG: startCircleG,
@@ -197,8 +215,8 @@
      * @param renderPort
      * @returns {Selection}
      */
-    function renderStartCircles(sortedData, xScale, renderPort, addProjMode) {
-        return renderCircles(sortedData, xScale, renderPort, addProjMode,
+    renderStartCircles(sortedData, xScale, renderPort, addProjMode) {
+        return this.renderCircles(sortedData, xScale, renderPort, addProjMode,
             (data) => data.realStartDate);
     }
 
@@ -209,10 +227,10 @@
      * @param renderPort
      * @returns {Selection}
      */
-    function renderEndCircles(sortedData, xScale, renderPort, addProjMode) {
-        return renderCircles(sortedData, xScale, renderPort, addProjMode,
+    renderEndCircles(sortedData, xScale, renderPort, addProjMode) {
+        return this.renderCircles(sortedData, xScale, renderPort, addProjMode,
             (data) => data.realEndDate,
-            (data) => isBeforeToday(data));
+            (data) => this.isBeforeToday(data));
     }
 
     //TODO: separate this out
@@ -224,10 +242,10 @@
      * @param renderPort
      * @returns {Selection}
      */
-    function renderLines(sortedData, xScale, renderPort, addProjMode) {
+    renderLines(sortedData, xScale, renderPort, addProjMode) {
         let pts = sortedData.reduce((arr, data, index) => {
             let ptsArr = data.map((timeData) => {
-                let {id, fill, projectedStartDate, realStartDate, realEndDate, projectedEndDate, isPlaceholder} = timeData;
+                let { id, fill, projectedStartDate, realStartDate, realEndDate, projectedEndDate, isPlaceholder } = timeData;
                 let solidEnd = Math.min(projectedEndDate, today);
                 if (realEndDate) solidEnd = Math.min(realEndDate, solidEnd);
 
@@ -246,7 +264,7 @@
                     greyLineEndX: (realEndDate) ? realStartDate : projectedEndDate,
                     y: index,
                     id: id,
-                    fill: (addProjMode && !isPlaceholder)? rgbToGrayScale(fill) :fill
+                    fill: (addProjMode && !isPlaceholder) ? this.rgbToGrayScale(fill) : fill
                 }
             });
             return arr.concat(ptsArr);
@@ -267,7 +285,7 @@
             .attr('class', 'grey-lines')
             .attr('x', (d) => xScale(d.greyLineStartX))
             .attr('width', (d) => xScale(d.greyLineEndX) - xScale(d.greyLineStartX))
-            .attr('y', (d) => getYCoord(d.y) - 1)
+            .attr('y', (d) => this.getYCoord(d.y) - 1)
             .attr('height', 3)
             .attr('opacity', 0.23)
             .style('fill', (d) => d.fill);
@@ -278,7 +296,7 @@
             .attr('class', 'solid-lines')
             .attr('x', (d) => xScale(d.x1))
             .attr('width', (d) => xScale((d.x3) ? d.x3 : d.x2) - xScale(d.x1))
-            .attr('y', (d) => getYCoord(d.y) - 1)
+            .attr('y', (d) => this.getYCoord(d.y) - 1)
             .attr('height', 3)
             .style('fill', (d) => d.fill);
 
@@ -288,7 +306,7 @@
             .attr('class', 'dashed-lines')
             .attr('x', (d) => xScale(d.x2))
             .attr('width', (d) => xScale(d.x3) - xScale(d.x2))
-            .attr('y', (d) => getYCoord(d.y) - 1)
+            .attr('y', (d) => this.getYCoord(d.y) - 1)
             .attr('height', 3)
             .style('fill', "url(#diagonalPattern)");
 
@@ -304,7 +322,7 @@
      * @param filter
      * @returns {Selection}
      */
-    function renderCircles(sortedData, xScale, renderPort, addProjMode ,retrieveX, filter) {
+    renderCircles(sortedData, xScale, renderPort, addProjMode, retrieveX, filter) {
         let pts = sortedData.reduce((arr, data, index) => {
             let workingData = (filter) ? data.filter(filter) : data;
             let ptsArr = workingData.map((timeData) => {
@@ -312,7 +330,7 @@
                     x: retrieveX(timeData),
                     y: index,
                     id: timeData.id,
-                    fill: (addProjMode && !timeData.isPlaceholder)? rgbToGrayScale(timeData.fill) : timeData.fill
+                    fill: (addProjMode && !timeData.isPlaceholder) ? this.rgbToGrayScale(timeData.fill) : timeData.fill
                 }
             });
             return arr.concat(ptsArr);
@@ -326,7 +344,7 @@
             .enter()
             .append('circle')
             .attr('cx', (d) => xScale(d.x))
-            .attr('cy', (d) => getYCoord(d.y))
+            .attr('cy', (d) => this.getYCoord(d.y))
             .attr('r', 4)
             .style('fill', (d) => d.fill);
 
@@ -340,7 +358,7 @@
      * @param renderPort
      * @returns {Selection}
      */
-    function renderArrows(sortedData, xScale, renderPort, addProjMode) {
+    renderArrows(sortedData, xScale, renderPort, addProjMode) {
         let pts = sortedData.reduce((arr, data, index) => {
             let ptsArr = data.filter((data) => !data.realEndDate)
                 .map((timeData) => {
@@ -348,7 +366,7 @@
                         x: today,
                         y: index,
                         id: timeData.id,
-                        fill: (addProjMode && !timeData.isPlaceholder)? rgbToGrayScale(timeData.fill) : timeData.fill
+                        fill: (addProjMode && !timeData.isPlaceholder) ? this.rgbToGrayScale(timeData.fill) : timeData.fill
                     }
                 });
             return arr.concat(ptsArr);
@@ -359,12 +377,12 @@
         arrows
             .enter()
             .append('polyline')
-            .attr('points', (d) => generateTrianglePts(xScale(d.x), getYCoord(d.y)))
+            .attr('points', (d) => this.generateTrianglePts(xScale(d.x), this.getYCoord(d.y)))
             .style('fill', (d) => d.fill);
         return arrows;
     }
 
-    function renderTodayMarker(renderPort, xScale, height) {
+    renderTodayMarker(renderPort, xScale, height) {
         let x = xScale(today);
         let y = height - legendHeight;
         renderPort.selectAll('circle')
@@ -384,7 +402,7 @@
 
     }
 
-    function formatAxis(g, height, axis, xScale) {
+    formatAxis(g, height, axis, xScale) {
         g.call(axis);
         g.select(".domain").remove();
         let ticks = g.selectAll(".tick");
@@ -400,7 +418,7 @@
                 let dateStr = d.toString();
                 return dateStr.substring(4, 7);
             })
-            .attr('x', (d) => getMonthBoxWidth(d, xScale) / 2)
+            .attr('x', (d) => this.getMonthBoxWidth(d, xScale) / 2)
             .style('fill', '#fff')
             .style('font-size', 13.5);
 
@@ -413,7 +431,7 @@
             .attr('fill', '#7E00ED');
         let allRects = ticks.selectAll('rect');
 
-        resizeAndPositionRects(allRects, xScale);
+        this.resizeAndPositionRects(allRects, xScale);
         // position axis
         g.attr('transform', `translate(0,${height - legendHeight})`);
     }
@@ -422,21 +440,21 @@
      Helper Functions
      ==================================*/
 
-    function generateTrianglePts(x, y) {
+    generateTrianglePts(x, y) {
         return `${x} ${y - 4},${x + 6} ${y},${x} ${y + 4},${x} ${y - 4}`;
     }
 
-    function getYCoord(yIndex) {
+    getYCoord(yIndex) {
         return yIndex * 20 + 25;
     }
 
-    function isBeforeToday(data) {
+    isBeforeToday(data) {
         return (data.realEndDate) ?
             data.realEndDate <= today :
             data.projectedEndDate < today;
     }
 
-    function createDiagonalPattern(svg, id) {
+    createDiagonalPattern(svg, id) {
         let defs = svg.append('defs');
         let pattern = defs.append('pattern')
             .attr('id', id)
@@ -455,7 +473,7 @@
 
     }
 
-    function getFittingSlot(data, set) {
+    getFittingSlot(data, set) {
         for (let i = 0; i < set.length; i++) {
             let row = set[i];
             let lastData = row[row.length - 1];
@@ -465,24 +483,24 @@
         return -1;
     }
 
-    function resizeAndPositionRects(allRects, xScale) {
+    resizeAndPositionRects(allRects, xScale) {
         allRects
             .attr('class', 'bg-rect')
-            .attr('width', (d) => getMonthBoxWidth(d, xScale))
+            .attr('width', (d) => this.getMonthBoxWidth(d, xScale))
             .attr('height', legendHeight);
     }
 
-    function getMonthBoxWidth(d, xScale) {
+    getMonthBoxWidth(d, xScale) {
         let month = d.getMonth();
         let year = d.getYear();
-        let dateInMonth = findNumberOfDaysInMonth(month, year);
+        let dateInMonth = this.findNumberOfDaysInMonth(month, year);
         let startTime = d.getTime();
         let endTime = startTime + day * dateInMonth;
         return xScale(endTime) - xScale(startTime);
     }
 
-    function createXAxis(dataSet, elementWidth) {
-        let xScale = getXRange(dataSet, elementWidth);
+    createXAxis(dataSet, elementWidth) {
+        let xScale = this.getXRange(dataSet, elementWidth);
         return {
             axis: d3.axisBottom(xScale)
                 .ticks(d3.timeMonth),
@@ -490,13 +508,13 @@
         }
     }
 
-    function setViewPortSVGSize(svg, width, height) {
+    setViewPortSVGSize(svg, width, height) {
         svg
             .attr('width', width)
             .attr('height', height);
     }
 
-    function getXRange(dataSet, elementWidth) {
+    getXRange(dataSet, elementWidth) {
         let avgMonth = day * 30;
         let minMax = dataSet.reduce((extrema, data) => {
             extrema[0] = Math.min(extrema[0], data.realStartDate);
@@ -515,7 +533,7 @@
             .nice(d3.timeMonth);
     }
 
-    function findNumberOfDaysInMonth(month, year) {
+    findNumberOfDaysInMonth(month, year) {
         if (month === 1) {
             return (year % 4 === 0) ? 29 : 28;
         }
@@ -524,51 +542,51 @@
         else return 30 + monthEven;
     }
 
-    function rgbToGrayScale(rgb){
-        let {r, g, b} = separateRGB(rgb);
+    rgbToGrayScale(rgb) {
+        let { r, g, b } = this.separateRGB(rgb);
         let rInt = parseInt(r, 16);
         let gInt = parseInt(g, 16);
         let bInt = parseInt(b, 16);
 
         let x = 0.299 * rInt + 0.587 * gInt + 0.114 * bInt;
         let xHex = Math.floor(x).toString(16);
-        if(xHex.length === 1) xHex = [0,xHex].join('');
-        return `#${duplicateString(xHex, 3)}`;
+        if (xHex.length === 1) xHex = [0, xHex].join('');
+        return `#${this.duplicateString(xHex, 3)}`;
     }
 
-    function separateRGB(rgb){
-        let strippedRGB = (rgb.charAt(0)==='#')?rgb.substring(1,rgb.length):rgb;
+    separateRGB(rgb) {
+        let strippedRGB = (rgb.charAt(0) === '#') ? rgb.substring(1, rgb.length) : rgb;
         let r, g, b;
-        if(strippedRGB.length === 6){
-            r = strippedRGB.substring(0,2);
-            g = strippedRGB.substring(2,4);
-            b = strippedRGB.substring(4,6);
+        if (strippedRGB.length === 6) {
+            r = strippedRGB.substring(0, 2);
+            g = strippedRGB.substring(2, 4);
+            b = strippedRGB.substring(4, 6);
 
-        } else if (strippedRGB.length === 3){
-            r = duplicateString(strippedRGB.charAt(0));
-            g = duplicateString(strippedRGB.charAt(1));
-            b = duplicateString(strippedRGB.charAt(2));
+        } else if (strippedRGB.length === 3) {
+            r = this.duplicateString(strippedRGB.charAt(0));
+            g = this.duplicateString(strippedRGB.charAt(1));
+            b = this.duplicateString(strippedRGB.charAt(2));
         } else {
             throw "invalid color format"
         }
-        return {r, g, b}
-        
+        return { r, g, b }
+
     }
 
-    function duplicateString(str, times = 2){
+    duplicateString(str, times = 2) {
         let dupeArr = [];
-        for(let i = 0; i < times; i++){
+        for (let i = 0; i < times; i++) {
             dupeArr.push(str);
         }
         return dupeArr.join('');
     }
 
-    function transformPlaceholder(data){
+    transformPlaceholder(data) {
         let transformedData = {};
-        if(data.startDate){
+        if (data.startDate) {
             transformedData.projectedStartDate = data.startDate;
             transformedData.realStartDate = data.startDate;
-            if(data.endDate){
+            if (data.endDate) {
                 transformedData.projectedEndDate = data.endDate;
                 transformedData.realEndDate = data.endDate;
             } else {
@@ -577,14 +595,14 @@
             }
 
         } else {
-            if(data.endDate){
+            if (data.endDate) {
                 transformedData.projectedEndDate = data.endDate;
                 transformedData.realEndDate = data.endDate;
                 transformedData.projectedStartDate = data.endDate;
                 transformedData.realStartDate = data.endDate;
             }
 
-            else {return null;}
+            else { return null; }
         }
         transformedData.id = 'placeholder'
         transformedData.fill = '#fa4659';
@@ -592,13 +610,17 @@
         return transformedData;
     }
 
-    function combineMainAndPlaceholderData(mainData, placeholderData){
-        if(placeholderData){
+    combineMainAndPlaceholderData(mainData, placeholderData) {
+        if (placeholderData) {
             let mainDataCp = mainData.slice();
             mainDataCp.push(placeholderData);
             return mainDataCp;
         }
-        return  mainData;
+        return mainData;
     }
+
+}
+
+customElements.define(PBTimeSeriesChart.is, PBTimeSeriesChart);
 
 })();
