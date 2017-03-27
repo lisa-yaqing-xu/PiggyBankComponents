@@ -36,7 +36,7 @@
         }
 
         _convertToDate(timestamp) {
-            let date = new D    ate(timestamp);
+            let date = new Date(timestamp);
             let month = date.getMonth() + 1;
             let day = date.getDate();
             let year = date.getFullYear().toString().slice(2);
