@@ -1,8 +1,10 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../testing-data/pb-data-faker.html">
 <link rel="import" href="../components/pb-time-series-chart.html">
 <link rel="import" href="../components/pb-calendar.html">
 <link rel="import" href="../components/pb-project-term.html">
-
+<link rel="import" href="../components/pb-card.html">
+<link rel="import" href="../components/pb-table.html">
 <dom-module id="pb-components-demo">
 
     <template>
@@ -19,45 +21,62 @@
         <pb-time-series-chart data={{chartData}} add-proj-mode=true placeholder-dates={{placeholderData}}></pb-time-series-chart>
         <pb-calendar month-timestamp={{monthTimestamp}}></pb-calendar>
         <pb-project-term selected-date-range='{{placeholderData}}'></pb-project-term>
+        <pb-card cost=1234 label="something"></pb-card>
+        <pb-table headers={{tableHeaders}} data={{tableData}}></pb-table>
     </template>
     <script>
         (function () {
-            'use strict';
+            class PBComponentsDemo extends Polymer.Element {
             
-            const pbFaker = PBProjectWidgetTestDataFaker;
+                static get is() { return 'pb-components-demo'; }
 
-            let polymerConfig = {
-                is: 'pb-components-demo',
-                properties: {
-                    chartData: {
-                        type: Array,
-                        notify: true,
-                        value: pbFaker.fakeDataGenerator.generateStore(10)
-                    },
-                    monthTimestamp: {
-                        type: Number,
-                        notify: true,
-                        value: 1458975342788
-                    },
-                    placeholderData:{
-                        type: Object,
-                        notify: true,
-                        value: {}
+                constructor() {
+                    super();
+                }
+
+                static get properties() {
+                    return {
+                        chartData: {
+                            type: Array,
+                            notify: true,
+                            value: PBProjectWidgetTestDataFaker.fakeDataGenerator.generateStore(10)
+                        },
+                        monthTimestamp: {
+                            type: Number,
+                            notify: true,
+                            value: 1458975342788
+                        },
+                        placeholderData:{
+                            type: Object,
+                            notify: true,
+                            value: {}
+                        },
+                        tableData: {
+                            type: Array,
+                            notify: true,
+                            value: PBProjectWidgetTestDataFaker.projectData
+                        },
+                        tableHeaders: {
+                            type: Array,
+                            notify: true,
+                            value: ['Color', 'Project Name', 'Forecasted', 'Actual', '# of People', 'Start Date', 'End Date']
+                        }
                     }
-                    
-                },
-                generateNewChartData: function(){
-                    this.chartData = pbFaker.fakeDataGenerator.generateStore(10);
-                },
-                generatePlaceHolderData: function(){
-                    let newData =  pbFaker.fakeDataGenerator.generateStore(1)[0];
+                }
+                
+                generateNewChartData(){
+                    this.chartData = PBProjectWidgetTestDataFaker.fakeDataGenerator.generateStore(10);
+                }
+
+                generatePlaceHolderData(){
+                    let newData =  PBProjectWidgetTestDataFaker.fakeDataGenerator.generateStore(1)[0];
                     this.set('placeholderData',{
                         startDate: newData.projectedStartDate,
                         endDate: newData.projectedEndDate,
                     });
                 }
-            };
-            Polymer(polymerConfig);
+            }
+            customElements.define(PBComponentsDemo.is, PBComponentsDemo);
         })();
     </script>
 

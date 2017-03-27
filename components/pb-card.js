@@ -1,22 +1,30 @@
 (function () {
-    'use strict';
+    class PBCard extends Polymer.Element {
 
-    let polymerConfig = {
-        is: 'pb-card',
-        properties: {
-            cost: {
-                type: Number,
-                notify: true
-            },
-            label: {
-                type: String,
-                notify: true
-            }
-        },
-        displayCost: function (cost) {
-            let commaStr = cost.toLocaleString(undefined, { minimumFractionDigits: 0 });
-            return `$${commaStr}`;
+      static get is() { return 'pb-card'; }
+
+      static get properties() {
+        return {
+          cost: {
+              type: Number,
+              notify: true
+          },
+          label: {
+              type: String,
+              notify: true
+          }
         }
-    };
-    Polymer(polymerConfig);
+      }
+
+      constructor() {
+        super();
+      }
+
+      displayCost(cost) {
+          let commaStr = cost.toLocaleString(undefined, { minimumFractionDigits: 0 });
+          return `$${commaStr}`;
+      }
+    }
+    
+    customElements.define(PBCard.is, PBCard);
 })();

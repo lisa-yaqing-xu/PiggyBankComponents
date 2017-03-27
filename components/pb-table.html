@@ -1,4 +1,4 @@
-<link rel="import" href="../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
 
 <dom-module id="pb-table">
     <template>
@@ -41,7 +41,6 @@
                     </template>
                 </tr>
                 <template is="dom-repeat" items="{{data}}" as="dataArray">
-
                         <tr>
                             <td><div class="color-square" style$="background-color: {{dataArray.fill}};"></div></td>
                             <td>{{dataArray.name}}</td>
@@ -50,16 +49,7 @@
                             <td>{{dataArray.resources.length}}</td>
                             <td>{{dataArray.formattedProjectedStartDate}}</td>
                             <td>{{dataArray.formattedProjectedEndDate}}</td>
-
-                            <!--<template is="dom-repeat" items="{{_toArray(dataArray)}}" as="dataObj">
-                                <td>{{dataObj.value}}</td>
-                            </template>-->
                         </tr>
-
-
-                    <!--<tr>
-                        <td>{{row.value}}</td>
-                    </tr>-->
                 </template>
             </table>
         </div>
