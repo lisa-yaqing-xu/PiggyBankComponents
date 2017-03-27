@@ -2,7 +2,7 @@
 <link rel="import" href="../components/pb-time-series-chart.html">
 <link rel="import" href="../components/pb-calendar.html">
 <link rel="import" href="../components/pb-project-term.html">
-
+<link rel="import" href="../components/pb-card.html">
 <dom-module id="pb-components-demo">
 
     <template>
@@ -19,6 +19,7 @@
         <pb-time-series-chart data={{chartData}} add-proj-mode=true placeholder-dates={{placeholderData}}></pb-time-series-chart>
         <pb-calendar month-timestamp={{monthTimestamp}}></pb-calendar>
         <pb-project-term selected-date-range='{{placeholderData}}'></pb-project-term>
+        <pb-card cost=1234 label="something"></pb-card>
     </template>
     <script>
         (function () {
