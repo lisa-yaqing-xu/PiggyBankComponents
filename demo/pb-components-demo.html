@@ -3,6 +3,7 @@
 <link rel="import" href="../components/pb-calendar.html">
 <link rel="import" href="../components/pb-project-term.html">
 <link rel="import" href="../components/pb-card.html">
+<link rel="import" href="../components/pb-table.html">
 <dom-module id="pb-components-demo">
 
     <template>
@@ -20,6 +21,7 @@
         <pb-calendar month-timestamp={{monthTimestamp}}></pb-calendar>
         <pb-project-term selected-date-range='{{placeholderData}}'></pb-project-term>
         <pb-card cost=1234 label="something"></pb-card>
+        <pb-table headers={{tableHeaders}} data={{tableData}}></pb-table>
     </template>
     <script>
         (function () {
@@ -44,6 +46,18 @@
                         type: Object,
                         notify: true,
                         value: {}
+                    },
+                    tableData: {
+                        type: Array,
+                        notify: true,
+                        value: function() {
+                            return pbFaker.projectData;
+                        }
+                    },
+                    tableHeaders: {
+                        type: Array,
+                        notify: true,
+                        value: ['Color', 'Project Name', 'Forecasted', 'Actual', '# of People', 'Start Date', 'End Date']
                     }
                     
                 },
