@@ -1,13 +1,12 @@
 (function () {
     'use strict';
-
-    const today = Number(new Date());
-    let day = 1000 * 60 * 60 * 24;
-    let legendHeight = 30;
-
+ 
     class PBTimeSeriesChart extends Polymer.Element {
         constructor() {
             super();
+            this.today = Number(new Date());
+            this.day = 1000 * 60 * 60 * 24;
+            this.legendHeight = 30;
         }
         static get is() {
             return 'pb-time-series-chart';
@@ -242,15 +241,15 @@
             let pts = sortedData.reduce((arr, data, index) => {
                 let ptsArr = data.map((timeData) => {
                     let { id, fill, projectedStartDate, realStartDate, realEndDate, projectedEndDate, isPlaceholder } = timeData;
-                    let solidEnd = Math.min(projectedEndDate, today);
+                    let solidEnd = Math.min(projectedEndDate, this.today);
                     if (realEndDate) solidEnd = Math.min(realEndDate, solidEnd);
 
                     let dashedEnd;
                     if (realEndDate) {
-                        dashedEnd = (realEndDate < projectedEndDate) ? null : Math.min(realEndDate, today);
+                        dashedEnd = (realEndDate < projectedEndDate) ? null : Math.min(realEndDate, this.today);
                     }
                     else {
-                        dashedEnd = (projectedEndDate < today) ? today : null;
+                        dashedEnd = (projectedEndDate < this.today) ? this.today : null;
                     }
                     return {
                         x1: realStartDate,
@@ -359,7 +358,7 @@
                 let ptsArr = data.filter((data) => !data.realEndDate)
                     .map((timeData) => {
                         return {
-                            x: today,
+                            x: this.today,
                             y: index,
                             id: timeData.id,
                             fill: (addProjMode && !timeData.isPlaceholder) ? this.rgbToGrayScale(timeData.fill) : timeData.fill
@@ -379,8 +378,8 @@
         }
 
         renderTodayMarker(renderPort, xScale, height) {
-            let x = xScale(today);
-            let y = height - legendHeight;
+            let x = xScale(this.today);
+            let y = height - this.legendHeight;
             renderPort.selectAll('circle')
                 .remove();
 
@@ -429,7 +428,7 @@
 
             this.resizeAndPositionRects(allRects, xScale);
             // position axis
-            g.attr('transform', `translate(0,${height - legendHeight})`);
+            g.attr('transform', `translate(0,${height - this.legendHeight})`);
         }
 
         /*==================================
@@ -446,8 +445,8 @@
 
         isBeforeToday(data) {
             return (data.realEndDate) ?
-                data.realEndDate <= today :
-                data.projectedEndDate < today;
+                data.realEndDate <= this.today :
+                data.projectedEndDate < this.today;
         }
 
         createDiagonalPattern(svg, id) {
@@ -473,8 +472,8 @@
             for (let i = 0; i < set.length; i++) {
                 let row = set[i];
                 let lastData = row[row.length - 1];
-                let lastEndDate = lastData.realEndDate || today;
-                if (data.projectedStartDate > lastEndDate + day * 5) return i;
+                let lastEndDate = lastData.realEndDate || this.today;
+                if (data.projectedStartDate > lastEndDate + this.day * 5) return i;
             }
             return -1;
         }
@@ -483,7 +482,7 @@
             allRects
                 .attr('class', 'bg-rect')
                 .attr('width', (d) => this.getMonthBoxWidth(d, xScale))
-                .attr('height', legendHeight);
+                .attr('height', this.legendHeight);
         }
 
         getMonthBoxWidth(d, xScale) {
@@ -491,7 +490,7 @@
             let year = d.getYear();
             let dateInMonth = this.findNumberOfDaysInMonth(month, year);
             let startTime = d.getTime();
-            let endTime = startTime + day * dateInMonth;
+            let endTime = startTime + this.day * dateInMonth;
             return xScale(endTime) - xScale(startTime);
         }
 
@@ -511,17 +510,17 @@
         }
 
         getXRange(dataSet, elementWidth) {
-            let avgMonth = day * 30;
+            let avgMonth = this.day * 30;
             let minMax = dataSet.reduce((extrema, data) => {
                 extrema[0] = Math.min(extrema[0], data.realStartDate);
-                let endDate = Math.min(data.projectedEndDate, today);
+                let endDate = Math.min(data.projectedEndDate, this.today);
                 endDate = (data.realEndDate) ? Math.min(endDate, data.realEndDate) : endDate;
                 extrema[1] = Math.max(extrema[1], endDate);
                 return extrema;
             }, [Infinity, 0]);
 
             let start = new Date(minMax[0] - avgMonth);
-            let end = new Date(Math.max(today, minMax[1]) + avgMonth);
+            let end = new Date(Math.max(this.today, minMax[1]) + avgMonth);
 
             return d3.scaleTime()
                 .range([0, elementWidth])

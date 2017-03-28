@@ -1,3 +1,4 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
 <dom-module id="pb-calendar">
     <template>
         <style>
@@ -48,6 +49,7 @@
                         <template is='dom-repeat' items={{week}} as="day" index-as="colIndex">
                             <td class$='{{getCalendarClass(day, selectedDate)}}' 
                                 on-mouseover="onDateHover" on-mouseout="removeHover"
+                                on-click="onDateSelect"
                                 data-row$="{{rowIndex}}" data-col$="{{colIndex}}">
                                 {{getCalendarVal(day)}}
                             </td>
