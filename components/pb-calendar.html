@@ -43,6 +43,18 @@
         </style>
 
         <div class='pb-calendar-wrapper'>
+            <div class='pb-calendar-monthyear-select'>
+                <div class='pb-calendar-year'>
+                    <span on-click='decrementYear'>&lt;</span>
+                    {{getYear(monthSelectionDate)}}
+                    <span on-click='incrementYear'>&gt;</span>
+                </div>
+                <div class='pb-calendar-month'>
+                    <span on-click='decrementMonth'>&lt;</span>
+                    {{getMonth(monthSelectionDate)}}
+                    <span on-click='incrementMonth'>&gt;</span>
+                </div>
+            </div>
             <table class='pb-calendar-body'>
                 <template is='dom-repeat' items={{dates}} as="week" index-as="rowIndex">
                     <tr>

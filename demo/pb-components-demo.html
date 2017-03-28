@@ -17,9 +17,10 @@
                 font-family: 'CA Sans', 'Helvetica', 'sans-serif';
             }
         </style>
-        <button on-tap='generateNewChartData'>Change Data</button> <button on-tap='generatePlaceHolderData'>Create Simulated Placeholder</button>
+        <button on-click='generateNewChartData'>Change Data</button> <button on-click='generatePlaceHolderData'>Create Simulated Placeholder</button>
         <pb-time-series-chart data={{chartData}} add-proj-mode=true placeholder-dates={{placeholderData}}></pb-time-series-chart>
-        <pb-calendar month-timestamp={{monthTimestamp}}></pb-calendar>
+        <button on-click='updateSelectedDate'>changeDate</button>
+        <pb-calendar month-timestamp={{monthTimestamp}} selected-date={{selectedDate}}></pb-calendar>
         <pb-project-term selected-date-range='{{placeholderData}}'></pb-project-term>
         <pb-card cost=1234 label="something"></pb-card>
         <pb-table headers={{tableHeaders}} data={{tableData}}></pb-table>
@@ -27,7 +28,7 @@
     <script>
         (function () {
             class PBComponentsDemo extends Polymer.Element {
-            
+
                 static get is() { return 'pb-components-demo'; }
 
                 constructor() {
@@ -46,7 +47,7 @@
                             notify: true,
                             value: 1458975342788
                         },
-                        placeholderData:{
+                        placeholderData: {
                             type: Object,
                             notify: true,
                             value: {}
@@ -60,20 +61,35 @@
                             type: Array,
                             notify: true,
                             value: ['Color', 'Project Name', 'Forecasted', 'Actual', '# of People', 'Start Date', 'End Date']
+                        },
+                        selectedDate: {
+                            type: Object,
+                            notify: true,
+                            value: null
                         }
                     }
                 }
-                
-                generateNewChartData(){
+
+                generateNewChartData() {
                     this.chartData = PBProjectWidgetTestDataFaker.fakeDataGenerator.generateStore(10);
                 }
 
-                generatePlaceHolderData(){
-                    let newData =  PBProjectWidgetTestDataFaker.fakeDataGenerator.generateStore(1)[0];
-                    this.set('placeholderData',{
+                generatePlaceHolderData() {
+                    let newData = PBProjectWidgetTestDataFaker.fakeDataGenerator.generateStore(1)[0];
+                    this.set('placeholderData', {
                         startDate: newData.projectedStartDate,
                         endDate: newData.projectedEndDate,
                     });
+                }
+                updateSelectedDate() {
+                    if (Math.random() > 0.1) {
+                        let year = Math.floor(Math.random() * 6) + 2012;
+                        let month = Math.floor(Math.random() * 12);
+                        let day = Math.floor(Math.random() * 28) + 1;
+                        this.selectedDate = new Date(year, month, day);
+                    }
+                    else  this.selectedDate = null;
+
                 }
             }
             customElements.define(PBComponentsDemo.is, PBComponentsDemo);
