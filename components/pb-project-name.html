@@ -1,0 +1,50 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+
+<dom-module id="pb-project-name">
+    <template>
+        <style>
+            :host {
+                display: block;
+                font-family: 'CA Sans', 'Helvetica', 'sans-serif';
+                position: relative;
+            }
+
+            h2 {
+                font-weight: bold;
+            }
+
+            .pb-project-name-wrapper {
+                position: relative;
+            }
+
+            .pb-project-name-input {
+                    height: 25px;                 
+                    border: none;
+                    border: solid 1px #EAE8F0;
+                    border-radius: 3px;           
+                    outline: none;
+                    padding: 5px 0 5px 10px;
+                    width:  100%;
+                    font-family: 'CA Sans', 'Helvetica', 'sans-serif';
+                    font-size:  16px;
+            }
+
+            .pb-project-name-input:focus {
+                border-color: #9D23FF
+            }
+        </style>
+        
+        <div class='pb-project-name-wrapper'>
+            <h2>Project Name</h2>
+            <input 
+                type="text" 
+                class="pb-project-name-input" 
+                value={{projectName}}
+            />
+            
+        </div>
+           
+    </template>
+    <script src="pb-project-name.js"></script>
+</dom-module>
+

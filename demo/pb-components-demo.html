@@ -5,6 +5,7 @@
 <link rel="import" href="../components/pb-project-term.html">
 <link rel="import" href="../components/pb-card.html">
 <link rel="import" href="../components/pb-table.html">
+<link rel="import" href="../components/pb-project-name.html">
 <dom-module id="pb-components-demo">
 
     <template>
@@ -23,6 +24,7 @@
         <pb-project-term selected-date-range='{{placeholderData}}'></pb-project-term>
         <pb-card cost=1234 label="something"></pb-card>
         <pb-table headers={{tableHeaders}} data={{tableData}}></pb-table>
+        <pb-project-name project-name="PiggyBank"></pb-project-name>
     </template>
     <script>
         (function () {
