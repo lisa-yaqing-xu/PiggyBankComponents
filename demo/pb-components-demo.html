@@ -6,6 +6,7 @@
 <link rel="import" href="../components/pb-card.html">
 <link rel="import" href="../components/pb-table.html">
 <link rel="import" href="../components/pb-project-name.html">
+<link rel="import" href="../components/pb-project-phase.html">
 <dom-module id="pb-components-demo">
 
     <template>
@@ -25,6 +26,8 @@
         <pb-card cost=1234 label="something"></pb-card>
         <pb-table headers={{tableHeaders}} data={{tableData}}></pb-table>
         <pb-project-name project-name="PiggyBank"></pb-project-name>
+        <pb-project-phase phase="seed2" selected-phase={{selectedPhase}}></pb-project-phase>
+        <p>Selected Phase: {{selectedPhase}}</p>
     </template>
     <script>
         (function () {
@@ -62,7 +65,10 @@
                             type: Array,
                             notify: true,
                             value: ['Color', 'Project Name', 'Forecasted', 'Actual', '# of People', 'Start Date', 'End Date']
-                        }
+                        },
+                        selectedPhase: {
+                            type: String
+                        },
                     }
                 }
                 

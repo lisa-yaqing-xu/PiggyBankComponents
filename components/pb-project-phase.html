@@ -1,0 +1,69 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+
+<dom-module id="pb-project-phase">
+    <template>
+        <style>
+            :host {
+                display: block;
+                font-family: 'CA Sans', 'Helvetica', 'sans-serif';
+                position: relative;
+            }
+
+            h2 {
+                font-weight: bold;
+            }
+
+            .pb-project-phase-wrapper {
+                position: relative;
+            }    
+
+            .phase {
+                width: 100px;
+                border: 2px solid #9D23FF;
+                background-color: white;
+                border-radius: 4px;
+                color: #9D23FF;
+                display: inline-block;
+                padding: 5px 2px;
+            }
+            .phase:hover {
+                background-color: #9D23FF; 
+                color: white;
+                cursor: pointer;
+            }
+            .phase.selected {
+                background-color: #9D23FF; 
+                color: white;
+            }
+            p {
+                text-align: center;
+                padding: 0;
+                margin: 0;
+                font-size: 12px;
+                font-weight: 700;
+                pointer-events: none;
+            }
+            .pb-project-phase-input:focus {
+                border-color: #9D23FF
+            }
+        </style>
+        
+        <div class='pb-project-phase-wrapper'>
+            <h2>Phase</h2>
+            <div class="phase-container">
+                <template is="dom-repeat" items="{{phaseList}}">
+                    <div 
+                        class$="{{computeClasses(item.name)}}"
+                        on-click="handleOnClick"
+                        data-phaseName$="{{item.name}}">
+                        <p>{{item.display}}</p>
+                    </div>
+                </template>
+            </div>
+            
+        </div>
+           
+    </template>
+    <script src="pb-project-phase.js"></script>
+</dom-module>
+
