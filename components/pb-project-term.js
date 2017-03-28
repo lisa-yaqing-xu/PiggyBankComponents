@@ -15,15 +15,22 @@
                     observer: "_selectedEndDateChange"
                 },
                 formattedStartDate: {
-                    type: String
+                    type: String,
+                    value: ""
                 },
                 formattedEndDate: {
-                    type: String
+                    type: String,
+                    value: ""
                 },
                 selectedDateRange:{
                     type: Object,
                     value: {},
                     notify: true
+                },
+                calendarOpenDate: {
+                    type: Number,
+                    notify: true,
+                    value:  Date.now()                    
                 }
             }
         }
@@ -41,29 +48,33 @@
         }
 
         _selectedStartDateChange(timestamp) {
-            let date = new Date(timestamp);
-            let month = this.getMonthName(date);
-            let year = date.getFullYear(); 
-            let day = date.getDate(); 
-            if (day < 10) {
-                day = `0${day}`;
-            }
-            this.set('formattedStartDate', `${month} ${day}, ${year} `);
-            this.selectedDateRange.startDate = timestamp;            
-            this.selectedDateRange = Object.assign({},this.selectedDateRange);
+            if (timestamp != null) {
+                let date = new Date(timestamp);
+                let month = this.getMonthName(date);
+                let year = date.getFullYear(); 
+                let day = date.getDate(); 
+                if (day < 10) {
+                    day = `0${day}`;
+                }
+                this.set('formattedStartDate', `${month} ${day}, ${year} `);
+                this.selectedDateRange.startDate = timestamp;            
+                this.selectedDateRange = Object.assign({},this.selectedDateRange);    
+            }            
         }
 
         _selectedEndDateChange(timestamp) {
-            let date = new Date(timestamp);
-            let month = this.getMonthName(date);
-            let year = date.getFullYear(); 
-            let day = date.getDate(); 
-            if (day < 10) {
-                day = `0${day}`;
+            if (timestamp != null) {
+                let date = new Date(timestamp);
+                let month = this.getMonthName(date);
+                let year = date.getFullYear(); 
+                let day = date.getDate(); 
+                if (day < 10) {
+                    day = `0${day}`;
+                }
+                this.set('formattedEndDate', `${month} ${day}, ${year} `);
+                this.selectedDateRange.endDate = timestamp;            
+                this.selectedDateRange = Object.assign({},this.selectedDateRange);
             }
-            this.set('formattedEndDate', `${month} ${day}, ${year} `);
-            this.selectedDateRange.endDate = timestamp;            
-            this.selectedDateRange = Object.assign({},this.selectedDateRange);
         }
 
         toggleCalendar(id) {
@@ -75,6 +86,7 @@
                 }
                 else {
                     calendar.style.display = 'block';
+                    calendar.focus();
                 }    
             }
             else {

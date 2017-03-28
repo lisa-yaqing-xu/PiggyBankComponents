@@ -54,9 +54,9 @@
                 margin-top:  150px;
             }
         </style>
-
+        
         <div class='pb-project-term-wrapper'>
-             <input 
+            <input 
                 type="text" 
                 id="start"
                 class="pb-project-term-input" 
@@ -74,10 +74,10 @@
                 placeholder="End Date" 
                 on-click="handleTap"
                 value={{formattedEndDate}} />
-        
+            
             <pb-calendar 
                 id="start-calendar" 
-                month-timestamp=1458975342788
+                month-timestamp={{calendarOpenDate}}
                 selected-date="{{selectedStartDate}}"
                 on-blur="handleOnBlur"
                 tabindex="1">
@@ -85,7 +85,7 @@
             
             <pb-calendar 
                 id="end-calendar" 
-                month-timestamp=1458975342788
+                month-timestamp={{calendarOpenDate}}
                 selected-date="{{selectedEndDate}}"
                 on-blur="handleOnBlur"
                 tabindex="1">
