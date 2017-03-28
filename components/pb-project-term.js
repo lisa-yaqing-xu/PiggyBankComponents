@@ -1,96 +1,96 @@
 (function () {
-    'use strict';
     
-    let polymerConfig = {
-        is: 'pb-project-term',
-        properties: {
-            selectedStartDate: {
-                type: Object,
-                observer: "_selectedStartDateChange"
-            },
-            selectedEndDate: {
-                type: Object,
-                observer: "_selectedEndDateChange"
-            },
-            formattedStartDate: {
-                type: String
-            },
-            formattedEndDate: {
-                type: String
-            },
-            selectedDateRange:{
-                type: Object,
-                value: {},
-                notify: true
-            }
+    class PBProjectTerm extends Polymer.Element {
+    
+        static get is() { return 'pb-project-term'; }
 
-        },
-        listeners:{
-            
-        },
-        handleOnBlur: function() {
-            console.log('herrrrr e');
-            toggleCalendar();
-        },
-        handleTap: function(e) {
-            console.log(Polymer.dom(e).localTarget.id);
-            toggleCalendar(Polymer.dom(e).localTarget.id);
-        },
-        _selectedStartDateChange: function(timestamp) {
+        static get properties() {
+            return {
+                selectedStartDate: {
+                    type: Object,
+                    observer: "_selectedStartDateChange"
+                },
+                selectedEndDate: {
+                    type: Object,
+                    observer: "_selectedEndDateChange"
+                },
+                formattedStartDate: {
+                    type: String
+                },
+                formattedEndDate: {
+                    type: String
+                },
+                selectedDateRange:{
+                    type: Object,
+                    value: {},
+                    notify: true
+                }
+            }
+        }
+
+        constructor() {
+            super();
+        }
+
+        handleOnBlur() {
+            this.toggleCalendar();
+        }
+
+        handleTap(e) {
+            this.toggleCalendar(Polymer.dom(e).localTarget.id);
+        }
+
+        _selectedStartDateChange(timestamp) {
             let date = new Date(timestamp);
-            let month = getMonthName(date);
+            let month = this.getMonthName(date);
             let year = date.getFullYear(); 
             let day = date.getDate(); 
             if (day < 10) {
                 day = `0${day}`;
             }
-            console.log(`${month} ${day}, ${year} `);
             this.set('formattedStartDate', `${month} ${day}, ${year} `);
             this.selectedDateRange.startDate = timestamp;            
             this.selectedDateRange = Object.assign({},this.selectedDateRange);
-        },
-        _selectedEndDateChange: function(timestamp) {
+        }
+
+        _selectedEndDateChange(timestamp) {
             let date = new Date(timestamp);
-            let month = getMonthName(date);
+            let month = this.getMonthName(date);
             let year = date.getFullYear(); 
             let day = date.getDate(); 
             if (day < 10) {
                 day = `0${day}`;
             }
-            console.log(`${month} ${day}, ${year} `);
             this.set('formattedEndDate', `${month} ${day}, ${year} `);
             this.selectedDateRange.endDate = timestamp;            
             this.selectedDateRange = Object.assign({},this.selectedDateRange);
         }
 
-    };
-    Polymer(polymerConfig);
-    /*
-        FUNCTIONS
-    */
-
-    function toggleCalendar(id) {
-        if (id) {
-            let calendar = document.getElementById(`${id}-calendar`);
-            if (calendar.style.display == 'block') {
-                calendar.style.display = 'none';
+        toggleCalendar(id) {
+            if (id) {
+                let calendar = this.shadowRoot.getElementById(`${id}-calendar`);
+                console.log(calendar);
+                if (calendar.style.display == 'block') {
+                    calendar.style.display = 'none';
+                }
+                else {
+                    calendar.style.display = 'block';
+                }    
             }
             else {
-                calendar.style.display = 'block';
-            }    
+                let startCal = this.shadowRoot.getElementById('start-calendar');
+                let endCal = this.shadowRoot.getElementById('end-calendar');
+                startCal.style.display = 'none';
+                endCal.style.display = 'none';
+            }
         }
-        else {
-            let startCal = document.getElementById('start-calendar');
-            let endCal = document.getElementById('end-calendar');
-            startCal.style.display = 'none';
-            endCal.style.display = 'none';
+
+        getMonthName(date) {
+          const months = ['January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'];
+          return months[date.getMonth()];
         }
-        
-    }
-    function getMonthName(date) {
-      const months = ['January', 'February', 'March', 'April', 'May', 'June',
-        'July', 'August', 'September', 'October', 'November', 'December'];
-      return months[date.getMonth()];
     }
     
+    customElements.define(PBProjectTerm.is, PBProjectTerm);
 })();

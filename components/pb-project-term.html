@@ -1,4 +1,6 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="pb-calendar.html">
+
 <dom-module id="pb-project-term">
     <template>
         <style>
@@ -59,7 +61,7 @@
                 id="start"
                 class="pb-project-term-input" 
                 placeholder="Start Date" 
-                on-tap="handleTap"
+                on-click="handleTap"
                 value={{formattedStartDate}}
             />
             
@@ -70,7 +72,7 @@
                 id="end"
                 class="pb-project-term-input end" 
                 placeholder="End Date" 
-                on-tap="handleTap"
+                on-click="handleTap"
                 value={{formattedEndDate}} />
         
             <pb-calendar 
