@@ -7,6 +7,7 @@
 <link rel="import" href="../components/pb-table.html">
 <link rel="import" href="../components/pb-project-name.html">
 <link rel="import" href="../components/pb-project-phase.html">
+<link rel="import" href="../components/pb-project-details.html">
 <dom-module id="pb-components-demo">
 
     <template>
@@ -22,6 +23,9 @@
         <button on-click='generateNewChartData'>Change Data</button> <button on-click='generatePlaceHolderData'>Create Simulated Placeholder</button>
         <pb-time-series-chart data={{chartData}} add-proj-mode=true placeholder-dates={{placeholderData}}></pb-time-series-chart>
         <button on-click='updateSelectedDate'>changeDate</button>
+
+        <pb-project-details></pb-project-details>
+
         <pb-calendar month-timestamp={{monthTimestamp}} selected-date={{selectedDate}}></pb-calendar>
         <pb-project-term selected-date-range='{{placeholderData}}'></pb-project-term>
         <pb-card cost=1234 label="something"></pb-card>
