@@ -2,78 +2,100 @@
 <dom-module id="pb-calendar">
     <template>
         <style>
-            :host {
+             :host {
                 display: inline-block;
                 font-family: 'CA Sans', 'Helvetica', 'sans-serif';
                 position: relative;
             }
-            table.pb-calendar-body{
+            
+            table.pb-calendar-body {
                 border-collapse: collapse;
             }
-            table.pb-calendar-body td{
-                position:relative;
+            
+            table.pb-calendar-body td {
+                position: relative;
                 border: 1px solid #888;
                 text-align: center;
                 font-size: 11px;
                 padding: 3px;
             }
-            table.pb-calendar-body td.selected, #pb-calendar-hover-display.selected{
-                background: #82a;
+            
+            table.pb-calendar-body td.selected,
+            #pb-calendar-hover-display.selected {
+                background: #9013FE;
                 color: #fff;
             }
+            
             .inactive {
                 background: #ddd;
             }
-            #pb-calendar-hover-display{
-                display:none;
+            
+            #pb-calendar-hover-display {
+                display: none;
                 position: absolute;
                 background: #fff;
-                border: 1px solid #82a;
+                border: 1px solid #7E00ED;
                 padding: 3px;
                 font-size: 13px;
-                color: #82a;
+                color: #7E00ED;
                 font-weight: bold;
                 width: 15px;
                 text-align: center;
                 pointer-events: none;
             }
-            #pb-calendar-hover-display.active{
+            
+            #pb-calendar-hover-display.active {
                 display: block;
+            }
+            
+            .pb-calendar-monthyear-select {
+                background: #7E00ED;
+                color: #fff;
+            }
+            .pb-calendar-click-arrow{
+                color: #c07cff;
+            }
+            .pb-calendar-click-arrow:hover{
+                color:#dcb7ff;
+            }
+            .pb-calendar-date-display{
+                display: inline-block;
+                vertical-align: top;
+                width: calc(100% - 40px);
             }
         </style>
 
         <div class='pb-calendar-wrapper'>
-            <div class='pb-calendar-monthyear-select'>
-                <div class='pb-calendar-year'>
-                    <span on-click='decrementYear'>&lt;</span>
-                    {{getYear(monthSelectionDate)}}
-                    <span on-click='incrementYear'>&gt;</span>
-                </div>
-                <div class='pb-calendar-month'>
-                    <span on-click='decrementMonth'>&lt;</span>
-                    {{getMonth(monthSelectionDate)}}
-                    <span on-click='incrementMonth'>&gt;</span>
-                </div>
-            </div>
             <table class='pb-calendar-body'>
+                <tr><th class='pb-calendar-monthyear-select' colspan='7'>
+                    <div class='pb-calendar-year'>
+                        <span class='pb-calendar-click-arrow' on-click='decrementYear'>&lt;</span>
+                        <span class='pb-calendar-date-display'>{{getYear(monthSelectionDate)}}</span>
+                        <span class='pb-calendar-click-arrow' on-click='incrementYear'>&gt;</span>
+                    </div>
+                    <div class='pb-calendar-month'>
+                        <span class='pb-calendar-click-arrow' on-click='decrementMonth'>&lt;</span> 
+                        <span class='pb-calendar-date-display'>{{getMonth(monthSelectionDate)}}</span>
+                        <span class='pb-calendar-click-arrow' on-click='incrementMonth'>&gt;</span>
+                    </div>
+                </th></tr>
                 <template is='dom-repeat' items={{dates}} as="week" index-as="rowIndex">
                     <tr>
                         <template is='dom-repeat' items={{week}} as="day" index-as="colIndex">
-                            <td class$='{{getCalendarClass(day, selectedDate)}}' 
-                                on-mouseover="onDateHover" on-mouseout="removeHover"
-                                on-click="onDateSelect"
+                            <td class$='{{getCalendarClass(day, selectedDate)}}' on-mouseover="onDateHover" on-mouseout="removeHover" on-click="onDateSelect"
                                 data-row$="{{rowIndex}}" data-col$="{{colIndex}}">
                                 {{getCalendarVal(day)}}
                             </td>
                         </template>
                     </tr>
                 </template>
+                
             </table>
             <div id="pb-calendar-hover-display" class$='{{hoverData.class}}' style$='{{hoverData.style}}'>
                 {{getCalendarVal(hoverData.date)}}
             </div>
         </div>
-       
+
     </template>
     <script src="pb-calendar.js"></script>
 </dom-module>
