@@ -12,11 +12,23 @@
 
             .pb-project-term-wrapper {
                 position: relative;
+                margin: 0 auto;
+                width: 50%;
             }
 
             .pb-date-input-wrapper{
                 position: relative;
                 display: inline-block;
+            }
+
+            .container {
+                display: inline-block;
+                margin: 0 auto;
+            }
+
+            h2 {
+                /* text-align: center;
+                margin-left: -220px; */
             }
 
             .pb-date-input-wrapper pb-calendar{
@@ -61,10 +73,11 @@
             }
         </style>
         
-        <div class="pb-date-input-wrapper">
+        <div class="pb-project-term-wrapper">
             <h2>Project Term</h2> 
             
-            <div class="pb-date-input-wrapper" on-blur='onStartDateEnter'>
+        <div class="container">
+            <div class="pb-date-input-wrapper">
                 <input 
                     type="text" 
                     id="start"
@@ -103,7 +116,7 @@
                     selected-date="{{selectedEndDate}}"
                     on-click="handleCalendarTap"
                     tabindex="1">
-                </pb-calendar>
+                </pb-calendar>        
             </div>
         </div>
            
