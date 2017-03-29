@@ -5,6 +5,16 @@
 
       static get properties() {
         return {
+          cost: {
+              type: Number,
+              notify: true,
+              value: 0
+          },
+          label: {
+              type: String,
+              notify: true,
+              value: "forecasted"
+          }
         }
       }
 
