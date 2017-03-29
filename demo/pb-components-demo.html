@@ -29,11 +29,11 @@
             .row {
                 margin-bottom: 30px;
             }
+
         </style>
         <button on-click='generateNewChartData'>Change Data</button> <button on-click='generatePlaceHolderData'>Create Simulated Placeholder</button>
         <pb-time-series-chart data={{chartData}} add-proj-mode=true placeholder-dates={{placeholderData}}></pb-time-series-chart>
         <button on-click='updateSelectedDate'>changeDate</button>
-        <pb-project-term></pb-project-term>    
         <div class="row">
             <div class="container">
                 <pb-project-term></pb-project-term>    
@@ -42,8 +42,8 @@
                 <pb-project-name></pb-project-name>
             </div>
         </div>
-        <div class="row">
-            <div class="container">
+        <div class="row bottom">
+            <div class="container phase">
                 <pb-project-phase phase="seed2" selected-phase={{selectedPhase}}></pb-project-phase>
             </div>
             <div class="container">
