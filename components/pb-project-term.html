@@ -64,21 +64,23 @@
         <div class="pb-date-input-wrapper">
             <h2>Project Term</h2> 
             
-            <div class="pb-date-input-wrapper">
+            <div class="pb-date-input-wrapper" on-blur='onStartDateEnter'>
                 <input 
                     type="text" 
                     id="start"
                     class="pb-project-term-input" 
                     placeholder="Start Date" 
-                    on-focus="handleTap"
+                    on-click="handleTap"
+                    on-blur='onStartInputBlur'
+                    on-keyup='onInputKeyup'                    
                     value={{formattedStartDate}}
                 />
                 <pb-calendar 
                     id="start-calendar" 
                     month-timestamp={{calendarStartOpenDate}}
                     selected-date="{{selectedStartDate}}"
-                    on-blur="handleOnBlur"
-                    tabindex="1">
+                    tabindex="1"
+                    on-click="handleCalendarTap">
                 </pb-calendar>
             </div>
            
@@ -90,14 +92,16 @@
                     id="end"
                     class="pb-project-term-input end" 
                     placeholder="End Date" 
-                    on-focus="handleTap"
+                    on-click="handleTap"
+                    on-blur='onEndInputBlur'
+                    on-keyup='onInputKeyup'
                     value={{formattedEndDate}} />
                 
                 <pb-calendar 
                     id="end-calendar" 
                     month-timestamp={{calendarEndOpenDate}}
                     selected-date="{{selectedEndDate}}"
-                    on-blur="handleOnBlur"
+                    on-click="handleCalendarTap"
                     tabindex="1">
                 </pb-calendar>
             </div>

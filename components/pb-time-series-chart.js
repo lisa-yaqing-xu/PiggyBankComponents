@@ -2,12 +2,6 @@
     'use strict';
  
     class PBTimeSeriesChart extends Polymer.Element {
-        constructor() {
-            super();
-            this.today = Number(new Date());
-            this.day = 1000 * 60 * 60 * 24;
-            this.legendHeight = 30;
-        }
         static get is() {
             return 'pb-time-series-chart';
         }
@@ -18,17 +12,14 @@
                     type: Array,
                     //observer: '_dataChanged',
                     notify: true,
-                    value: []
                 },
                 d3Cache: {
-                    type: Object,
-                    value: {}
+                    type: Object
                 },
                 placeholderDates: {
                     type: Object,
                     //observer: '_placeholderChanged',
                     notify: true,
-                    value: {}
                 },
                 addProjMode: {
                     type: Boolean,
@@ -51,6 +42,17 @@
             ]
         }
 
+
+        constructor() {
+            super();
+            this.today = Number(new Date());
+            this.day = 1000 * 60 * 60 * 24;
+            this.legendHeight = 30;
+            this.placeholderDates = {};
+            this.data = [];
+            this.d3Cache = {};
+        }
+
         connectedCallback() {
             Polymer.RenderStatus.beforeNextRender(this, function () {
                 this.viewport = this.getViewPort();
@@ -64,7 +66,7 @@
                 this.d3Cache = this.init(this.viewport, this.combinedData, this.sortedData, this.addProjMode);
                 this.initialized = true;
 
-                window.onresize = () => { this.onResize(); }
+                window.addEventListener('resize',() => { this.onResize(); } )
             });
         }
 
