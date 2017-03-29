@@ -7,6 +7,8 @@
 <link rel="import" href="../components/pb-table.html">
 <link rel="import" href="../components/pb-project-name.html">
 <link rel="import" href="../components/pb-project-phase.html">
+<link rel="import" href="../components/pb-project-details.html">
+<link rel="import" href="../components/pb-project-budget.html">
 <dom-module id="pb-components-demo">
 
     <template>
@@ -18,10 +20,38 @@
             text {
                 font-family: 'CA Sans', 'Helvetica', 'sans-serif';
             }
+
+            .container {
+                width: 45%;
+                vertical-align: top;
+                display: inline-block;
+            }
+
+            .row {
+                margin-bottom: 30px;
+            }
         </style>
         <button on-click='generateNewChartData'>Change Data</button> <button on-click='generatePlaceHolderData'>Create Simulated Placeholder</button>
         <pb-time-series-chart data={{chartData}} add-proj-mode=true placeholder-dates={{placeholderData}}></pb-time-series-chart>
         <button on-click='updateSelectedDate'>changeDate</button>
+
+        <div class="row">
+            <div class="container">
+                <pb-project-term></pb-project-term>    
+            </div>
+            <div class="container">
+                <pb-project-name></pb-project-name>
+            </div>
+        </div>
+        <div class="row">
+            <div class="container">
+                <pb-project-phase phase="seed2" selected-phase={{selectedPhase}}></pb-project-phase>
+            </div>
+            <div class="container">
+                <pb-project-budget cost=12345></pb-project-budget>
+            </div>
+        </div>
+
         <pb-calendar month-timestamp={{monthTimestamp}} selected-date={{selectedDate}}></pb-calendar>
         <pb-project-term selected-date-range='{{placeholderData}}'></pb-project-term>
         <pb-card cost=1234 label="something"></pb-card>

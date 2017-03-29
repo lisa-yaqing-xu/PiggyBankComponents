@@ -1,0 +1,26 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="pb-card.html">
+<dom-module id="pb-project-budget">
+    <template>
+        <style>
+
+            :host {
+                display: block;
+                font-family: 'CA Sans', 'Helvetica', 'sans-serif';
+            }
+
+            .card-wrapper {
+                height: 200px;
+                border: 2px solid #EAE8F0;
+            }
+
+        </style>
+        <div id='pb-project-budget'>
+            <h2>Budget</h1>
+            <div class="card-wrapper">
+                <pb-card label={{label}} cost={{cost}}></pb-card>
+            </div>
+        </div>
+    </template>
+    <script src="pb-project-budget.js"></script>
+</dom-module>

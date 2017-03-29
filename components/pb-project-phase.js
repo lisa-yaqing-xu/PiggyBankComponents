@@ -47,18 +47,20 @@
             ]
         }
 
-        computeClasses(name) {
+        computeClasses(name) { 
             let classList = "phase"; 
             if (name == this.phase) {
+                console.log(name);
                 return `${classList} selected`;
             }
             return classList;
         }
 
         handleOnClick(event) {            
-            let previouslySelectedPhase = this.shadowRoot.querySelector('div.phase.selected');
+            let previouslySelectedPhase = this.shadowRoot.querySelector('.phase.selected');
             let newSelectedPhase = event.currentTarget;
             let selectedPhaseName = event.target.getAttribute('data-phaseName');
+            console.log(previouslySelectedPhase);
             previouslySelectedPhase.classList.remove("selected");
             newSelectedPhase.classList.add("selected");
             this.set('selectedPhase', selectedPhaseName);
