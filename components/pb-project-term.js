@@ -27,7 +27,12 @@
                     value: {},
                     notify: true
                 },
-                calendarOpenDate: {
+                calendarStartOpenDate: {
+                    type: Number,
+                    notify: true,
+                    value:  Date.now()                    
+                },
+                calendarEndOpenDate: {
                     type: Number,
                     notify: true,
                     value:  Date.now()                    
