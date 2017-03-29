@@ -5,6 +5,9 @@
 
       static get properties() {
         return {
+          selectedPhase: {
+              type: String
+          },
         }
       }
 
