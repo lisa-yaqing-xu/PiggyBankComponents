@@ -14,6 +14,19 @@
                 position: relative;
             }
 
+            .pb-date-input-wrapper{
+                position: relative;
+                display: inline-block;
+            }
+
+            .pb-date-input-wrapper pb-calendar{
+                position: absolute;
+                top: 30px;
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 500;
+            }
+
             .pb-project-term-input {
                     height: 25px;                 
                     border: none;
@@ -31,17 +44,12 @@
                 font-family: 'CA Sans', 'Helvetica', 'sans-serif';
             }
 
-            .pb-project-term-input.end {
-                margin-left: 16px;
-            }
-
             .pb-input-separator {
                 box-sizing: border-box;
                 display: inline-block;
                 width: 12px; 
                 height: 4px; 
                 background-color: #343434;
-                position: absolute;
                 bottom: 15%;
             }
 
@@ -49,49 +57,48 @@
                 display: none;
                 outline: none;
             }
-
-            #end-calendar {
-                margin-top:  150px;
-            }
         </style>
         
-        <div class='pb-project-term-wrapper'>
+        <div class="pb-date-input-wrapper">
             <h2>Project Term</h2> 
-            <input 
-                type="text" 
-                id="start"
-                class="pb-project-term-input" 
-                placeholder="Start Date" 
-                on-click="handleTap"
-                value={{formattedStartDate}}
-            />
             
+            <div class="pb-date-input-wrapper">
+                <input 
+                    type="text" 
+                    id="start"
+                    class="pb-project-term-input" 
+                    placeholder="Start Date" 
+                    on-focus="handleTap"
+                    value={{formattedStartDate}}
+                />
+                <pb-calendar 
+                    id="start-calendar" 
+                    month-timestamp={{calendarStartOpenDate}}
+                    selected-date="{{selectedStartDate}}"
+                    on-blur="handleOnBlur"
+                    tabindex="1">
+                </pb-calendar>
+            </div>
+           
             <div class="pb-input-separator"></div>
-    
-            <input 
-                type="text" 
-                id="end"
-                class="pb-project-term-input end" 
-                placeholder="End Date" 
-                on-click="handleTap"
-                value={{formattedEndDate}} />
             
-            <pb-calendar 
-                id="start-calendar" 
-                month-timestamp={{calendarStartOpenDate}}
-                selected-date="{{selectedStartDate}}"
-                on-blur="handleOnBlur"
-                tabindex="1">
-            </pb-calendar>
-            
-            <pb-calendar 
-                id="end-calendar" 
-                month-timestamp={{calendarEndOpenDate}}
-                selected-date="{{selectedEndDate}}"
-                on-blur="handleOnBlur"
-                tabindex="1">
-            </pb-calendar>
-
+            <div class="pb-date-input-wrapper">
+                <input 
+                    type="text" 
+                    id="end"
+                    class="pb-project-term-input end" 
+                    placeholder="End Date" 
+                    on-focus="handleTap"
+                    value={{formattedEndDate}} />
+                
+                <pb-calendar 
+                    id="end-calendar" 
+                    month-timestamp={{calendarEndOpenDate}}
+                    selected-date="{{selectedEndDate}}"
+                    on-blur="handleOnBlur"
+                    tabindex="1">
+                </pb-calendar>
+            </div>
         </div>
            
     </template>
