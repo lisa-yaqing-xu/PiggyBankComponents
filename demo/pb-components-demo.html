@@ -36,10 +36,10 @@
         <button on-click='updateSelectedDate'>changeDate</button>
         <div class="row">
             <div class="container">
-                <pb-project-term></pb-project-term>    
+                <pb-project-term selected-date-range='{{placeholderData}}'></pb-project-term>
             </div>
             <div class="container">
-                <pb-project-name></pb-project-name>
+                <pb-project-name project-name="PiggyBank"></pb-project-name>
             </div>
         </div>
         <div class="row bottom">
@@ -47,17 +47,13 @@
                 <pb-project-phase phase="seed2" selected-phase={{selectedPhase}}></pb-project-phase>
             </div>
             <div class="container">
-                <pb-project-budget cost=12345></pb-project-budget>
+                <pb-project-budget cost=123456789></pb-project-budget>
             </div>
         </div>
 
         <pb-calendar month-timestamp={{monthTimestamp}} selected-date={{selectedDate}}></pb-calendar>
-        <pb-project-term selected-date-range='{{placeholderData}}'></pb-project-term>
-        <pb-card cost=1234 label="something"></pb-card>
+        
         <pb-table headers={{tableHeaders}} data={{tableData}}></pb-table>
-        <pb-project-name project-name="PiggyBank"></pb-project-name>
-        <pb-project-phase phase="seed2" selected-phase={{selectedPhase}}></pb-project-phase>
-        <p>Selected Phase: {{selectedPhase}}</p>
     </template>
     <script>
         (function () {
