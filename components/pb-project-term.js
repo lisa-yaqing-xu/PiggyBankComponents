@@ -83,7 +83,7 @@
             this.hideAllCalendars();
         }
 
-        handleTap(e) {
+        handleTap(e) {  
             let id = Polymer.dom(e).localTarget.id;
             let calId = this.getCalendarId(id);
             this.tappedStatus[calId] = true;
@@ -113,21 +113,21 @@
 
         setNewDateThroughInput(updateField, e){
             let newDate = new Date(e.target.value);
-            let date = ( isNaN( newDate.getTime()) )?null:newDate;
-            console.log(date);
+            let date;
+            if(isNaN( newDate.getTime())){
+                //will not trigger new data
+                date = this[updateField];
+                e.target.value = date?this.getFormattedDateString(date.getTime()):null;
+            } else {
+                date = newDate;
+            }
             this.set(updateField, date);
         }
 
         _selectedStartDateChange(timestamp) {
             if (timestamp != null) {
-                let date = new Date(timestamp);
-                let month = this.getMonthName(date);
-                let year = date.getFullYear();
-                let day = date.getDate();
-                if (day < 10) {
-                    day = `0${day}`;
-                }
-                this.set('formattedStartDate', `${month} ${day}, ${year} `);
+                let formattedDateStr = this.getFormattedDateString(timestamp);
+                this.set('formattedStartDate',formattedDateStr);
                 this.selectedDateRange.startDate = timestamp;
                 this.selectedDateRange = Object.assign({}, this.selectedDateRange);
             }
@@ -135,6 +135,13 @@
 
         _selectedEndDateChange(timestamp) {
             if (timestamp != null) {
+                let formattedDateStr = this.getFormattedDateString(timestamp);
+                this.set('formattedEndDate',formattedDateStr);
+                this.selectedDateRange.endDate = timestamp;
+                this.selectedDateRange = Object.assign({}, this.selectedDateRange);
+            }
+        }
+        getFormattedDateString(timestamp) {
                 let date = new Date(timestamp);
                 let month = this.getMonthName(date);
                 let year = date.getFullYear();
@@ -142,10 +149,7 @@
                 if (day < 10) {
                     day = `0${day}`;
                 }
-                this.set('formattedEndDate', `${month} ${day}, ${year} `);
-                this.selectedDateRange.endDate = timestamp;
-                this.selectedDateRange = Object.assign({}, this.selectedDateRange);
-            }
+                return `${month} ${day}, ${year}`;
         }
 
         setCalendarDisplay(id) {
