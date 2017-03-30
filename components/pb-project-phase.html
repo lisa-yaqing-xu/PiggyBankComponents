@@ -16,13 +16,16 @@
 
             .pb-project-phase-wrapper {
                 position: relative;
-                width: 50%;
                 margin: 0 auto;
+                padding: 10px;
+                box-sizing: border-box;
             }    
 
             .phase-container {
                 margin: 0 auto;
                 display: inline-block;
+                text-align: center;
+
             }
 
             .phase {
@@ -36,6 +39,10 @@
                 margin-right: 10px;
                 margin-bottom: 10px;
                 box-sizing: border-box;
+                white-space: nowrap;
+                overflow: hidden;
+                min-width: 100px;
+                text-overflow:ellipsis;
             }
             .phase:hover {
                 background-color: #9D23FF; 

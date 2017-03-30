@@ -1,6 +1,6 @@
 (function () {
     'use strict';
- 
+
     class PBTimeSeriesChart extends Polymer.Element {
         static get is() {
             return 'pb-time-series-chart';
@@ -51,24 +51,28 @@
             this.placeholderDates = {};
             this.data = [];
             this.d3Cache = {};
-        }
 
-        connectedCallback() {
-            Polymer.RenderStatus.beforeNextRender(this, function () {
-                this.viewport = this.getViewPort();
-                this.elementWidth = this.viewport.clientWidth;
-
-                this.placeholderData = this.transformPlaceholder(this.placeholderDates);
-                this.combinedData = this.combineMainAndPlaceholderData(this.combinedData, this.placeholderData)
-
-                this.sortedData = this.sortData(this.combinedData);
-
-                this.d3Cache = this.init(this.viewport, this.combinedData, this.sortedData, this.addProjMode);
-                this.initialized = true;
-
-                window.addEventListener('resize',() => { this.onResize(); } )
+            window.addEventListener('WebComponentsReady', (e) => {
+                this.onWebComponentLoad();
             });
+
         }
+
+        onWebComponentLoad() {
+            this.viewport = this.getViewPort();
+            this.elementWidth = this.viewport.clientWidth;
+
+            this.placeholderData = this.transformPlaceholder(this.placeholderDates);
+            this.combinedData = this.combineMainAndPlaceholderData(this.combinedData, this.placeholderData)
+
+            this.sortedData = this.sortData(this.combinedData);
+
+            this.d3Cache = this.init(this.viewport, this.combinedData, this.sortedData, this.addProjMode);
+            this.initialized = true;
+
+            window.addEventListener('resize', () => { this.onResize(); })
+        }
+
 
         getViewPort() { return this.shadowRoot.getElementById('chart-viewport') }
 
