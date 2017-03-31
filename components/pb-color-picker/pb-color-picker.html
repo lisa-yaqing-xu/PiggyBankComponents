@@ -1,0 +1,50 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<dom-module id="pb-color-picker">
+    <template>
+        <style>
+             :host {
+                display: block;
+                font-family: 'CA Sans', 'Helvetica', 'sans-serif';
+            }
+            .pb-color-picker-wrapper{
+                padding: 10px;
+            }
+            ul.pb-color-list {
+                padding: 0;
+                list-style: none;
+                text-align: justify;
+            }
+            
+            ul:after {
+                content: "";
+                width: 100%;
+                display: inline-block;
+            }
+            
+            li.pb-color-icon {
+                display:inline-block;
+                width: 16px;
+                height: 16px;
+                vertical-align: middle;
+                border-radius: 5px;
+            }
+            li.pb-color-icon.selected{
+                border: 2px solid #8c0dff;
+
+            }
+        </style>
+        <div class='pb-color-picker-wrapper'>
+            <h2>Color</h2>
+            <ul class='pb-color-list'>
+                <template is='dom-repeat' items={{colorOpts}} as='color'>
+                    <li class$='{{getClass(color, selectedColor)}}' 
+                        style$='background-color: {{color}};' 
+                        data-color$='{{color}}' 
+                        on-click='selectColor'></li>
+                </template>
+            </ul>
+        </div>
+
+    </template>
+    <script src="pb-color-picker.js"></script>
+</dom-module>

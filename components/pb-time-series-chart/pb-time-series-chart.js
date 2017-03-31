@@ -10,7 +10,6 @@
             return {
                 data: {
                     type: Array,
-                    //observer: '_dataChanged',
                     notify: true,
                 },
                 d3Cache: {
@@ -18,12 +17,15 @@
                 },
                 placeholderDates: {
                     type: Object,
-                    //observer: '_placeholderChanged',
                     notify: true,
                 },
                 addProjMode: {
                     type: Boolean,
                     value: false
+                },
+                placeholderColor: {
+                    type: String,
+                    notify: true
                 },
                 initialized: Boolean,
                 viewport: Object,
@@ -38,65 +40,83 @@
         static get observers() {
             return [
                 '_dataChanged(data)',
-                '_placeholderChanged(placeholderDates)'
+                '_placeholderChanged(placeholderDates)',
+                '_placeholderColorChanged(placeholderColor)'
             ]
         }
 
 
         constructor() {
+            
             super();
             this.today = Number(new Date());
             this.day = 1000 * 60 * 60 * 24;
             this.legendHeight = 30;
+
+            //initialize array/object datastructures here because this will create a new instance and not interfere
+            //with any other instance of chart.
             this.placeholderDates = {};
             this.data = [];
             this.d3Cache = {};
+        }
 
-            window.addEventListener('WebComponentsReady', (e) => {
-                this.onWebComponentLoad();
+        connectedCallback() {
+            super.connectedCallback();
+            Polymer.RenderStatus.beforeNextRender(this, function () {
+                this.viewport = this.getViewPort();
+                this.elementWidth = this.viewport.clientWidth;
+
+                this.placeholderData = this.transformPlaceholder(this.placeholderDates);
+                this.combinedData = this.combineMainAndPlaceholderData(this.combinedData, this.placeholderData)
+
+                this.sortedData = this.sortData(this.combinedData);
+
+                this.d3Cache = this.init(this.viewport, this.combinedData, this.sortedData, this.addProjMode);
+                this.initialized = true;
+
+                window.addEventListener('resize', () => { this.rerenderDataIfInitialized(); })
             });
 
         }
 
-        onWebComponentLoad() {
-            this.viewport = this.getViewPort();
-            this.elementWidth = this.viewport.clientWidth;
-
-            this.placeholderData = this.transformPlaceholder(this.placeholderDates);
-            this.combinedData = this.combineMainAndPlaceholderData(this.combinedData, this.placeholderData)
-
-            this.sortedData = this.sortData(this.combinedData);
-
-            this.d3Cache = this.init(this.viewport, this.combinedData, this.sortedData, this.addProjMode);
-            this.initialized = true;
-
-            window.addEventListener('resize', () => { this.onResize(); })
-        }
-
-
         getViewPort() { return this.shadowRoot.getElementById('chart-viewport') }
 
         _dataChanged(newData) {
-            this.combinedData = this.combineMainAndPlaceholderData(newData, this.placeholderData)
-            this.sortedData = this.sortData(this.combinedData);
-
-            if (this.initialized) {
-                this.update(this.d3Cache, this.viewport, this.combinedData, this.sortedData, this.addProjMode);
-            }
+            this.updateData();
         }
 
         _placeholderChanged(newData) {
-            this.placeholderData = this.transformPlaceholder(newData);
+            this.updateData();
+        }
+
+        _placeholderColorChanged(newColor) {
+            // Currently it will resort and rerender everything on a simple color change, 
+            // which is fairly inefficient and definitely more expensive but if 
+            // it doesn't cause any latency there isn't really any reason to change it, since it's a lot less
+            // code I have to maintain here. If it does end up lagging though, let me know. I have a way of 
+            // making this a lot faster but it's gonna add a lot more complexity and I'm not sure if worth. 
+            let hasData = (this.placeholderData) ?
+                Object.keys(this.placeholderData).reduce((has, field) => {
+                    if (this.placeholderData[field] != null) return true;
+                    else return has || false;
+                }, false) : false;
+            console.log(hasData);
+            if (hasData) {
+                this.updateData();
+            }
+
+        }
+
+        updateData() {
+            this.placeholderData = this.transformPlaceholder(this.placeholderDates);
             this.combinedData = this.combineMainAndPlaceholderData(this.data, this.placeholderData)
             this.sortedData = this.sortData(this.combinedData);
 
-
-            if (this.initialized) {
-                this.update(this.d3Cache, this.viewport, this.combinedData, this.sortedData, this.addProjMode);
-            }
+            this.rerenderDataIfInitialized();
         }
 
-        onResize() {
+
+        rerenderDataIfInitialized() {
             if (this.initialized) {
                 this.update(this.d3Cache, this.viewport, this.combinedData, this.sortedData, this.addProjMode);
             }
@@ -138,8 +158,7 @@
         * @param elementCache - a cache for svg elements
         */
         update(elementCache, viewport, data, sortedData, addProjMode) {
-            // TODO: only resort data when there's a data change, and not a resize
-            // should probably cache sortedData somewhere esp if we ever want transitions
+        
             let width = viewport.clientWidth;
             let height = sortedData.length * 20 + 50;
             this.setViewPortSVGSize(elementCache.svg, width, height);
@@ -606,7 +625,7 @@
                 else { return null; }
             }
             transformedData.id = 'placeholder'
-            transformedData.fill = '#fa4659';
+            transformedData.fill = this.placeholderColor || '#fa4659';
             transformedData.isPlaceholder = true;
             return transformedData;
         }

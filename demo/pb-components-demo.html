@@ -1,13 +1,15 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../testing-data/pb-data-faker.html">
-<link rel="import" href="../components/pb-time-series-chart.html">
-<link rel="import" href="../components/pb-calendar.html">
-<link rel="import" href="../components/pb-project-term.html">
-<link rel="import" href="../components/pb-card.html">
-<link rel="import" href="../components/pb-table.html">
-<link rel="import" href="../components/pb-project-name.html">
-<link rel="import" href="../components/pb-project-phase.html">
-<link rel="import" href="../components/pb-project-budget.html">
+<link rel="import" href="../components/pb-color-picker/pb-color-picker.html">
+<link rel="import" href="../components/pb-time-series-chart/pb-time-series-chart.html">
+<link rel="import" href="../components/pb-calendar/pb-calendar.html">
+<link rel="import" href="../components/pb-project-term/pb-project-term.html">
+<link rel="import" href="../components/pb-card/pb-card.html">
+<link rel="import" href="../components/pb-table/pb-table.html">
+<link rel="import" href="../components/pb-project-name/pb-project-name.html">
+<link rel="import" href="../components/pb-project-phase/pb-project-phase.html">
+<link rel="import" href="../components/pb-project-budget/pb-project-budget.html">
+
 <dom-module id="pb-components-demo">
 
     <template>
@@ -32,8 +34,10 @@
 
         </style>
         <button on-click='generateNewChartData'>Change Data</button> <button on-click='generatePlaceHolderData'>Create Simulated Placeholder</button>
-        <pb-time-series-chart data={{chartData}} add-proj-mode=true placeholder-dates={{placeholderData}}></pb-time-series-chart>
-        <button on-click='updateSelectedDate'>changeDate</button>
+        <pb-time-series-chart data={{chartData}} add-proj-mode=true placeholder-dates={{placeholderData}} placeholder-color={{selectedColor}}></pb-time-series-chart>
+        <div class='row'>
+            <pb-color-picker selected-color={{selectedColor}}></pb-color-picker>
+        </div>
         <div class="row">
             <div class="container">
                 <pb-project-term selected-date-range='{{placeholderData}}'></pb-project-term>
@@ -50,7 +54,7 @@
                 <pb-project-budget cost=123456789></pb-project-budget>
             </div>
         </div>
-
+<button on-click='updateSelectedDate'>changeDate</button>
         <pb-calendar month-timestamp={{monthTimestamp}} selected-date={{selectedDate}}></pb-calendar>
         
         <pb-table headers={{tableHeaders}} data={{tableData}}></pb-table>
@@ -100,6 +104,11 @@
                         selectedPhase: {
                             type: String
                         },
+                        selectedColor:{
+                            type:String,
+                            value:null,
+                            notify:true
+                        }
                     }
                 }
 
