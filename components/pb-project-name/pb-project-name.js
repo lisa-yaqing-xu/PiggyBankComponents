@@ -8,7 +8,8 @@
             return {
                 projectName: {
                     type: String,
-                    value: ""
+                    value: "",
+                    notify: true
                 }
             }
         }

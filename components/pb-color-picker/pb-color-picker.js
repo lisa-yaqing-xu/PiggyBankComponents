@@ -1,4 +1,5 @@
 (function () {
+    console.log('colorpicker loaded');
     class PBColorPicker extends Polymer.Element {
 
         static get is() { return 'pb-color-picker'; }

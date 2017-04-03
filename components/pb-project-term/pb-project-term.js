@@ -7,7 +7,6 @@
             return {
                 selectedStartDate: {
                     type: Object,
-                    observer: "_selectedStartDateChange"
                 },
                 selectedEndDate: {
                     type: Object,
@@ -42,11 +41,21 @@
             }
         }
 
+        static get observers() {
+            return [
+                '_selectedStartDateChange(selectedStartDate)',
+                '_selectedEndDateChange(selectedEndDate)'
+            ]
+        }
+
         constructor() {
             super();
             this.domCache = {};
             this.tappedStatus = {};
             this.calendarTapped = {};
+            console.log(this.selectedDateRange);
+            this.selectedDateRange = this.selectedDateRange || {test: true};
+            console.log(this.selectedDateRange);
             
             window.addEventListener('click', (e) => {                
                 let domCache = this.getDomCache();
@@ -61,8 +70,11 @@
                         this.hideCalendar(calendar);
                     }
                 })
-            })
+            });
+
+            console.log('constructed term');
         }
+
 
         getCalendarId(id){
             return `${id}-calendar`;
@@ -128,8 +140,8 @@
             if (timestamp != null) {
                 let formattedDateStr = this.getFormattedDateString(timestamp);
                 this.set('formattedStartDate',formattedDateStr);
-                this.selectedDateRange.startDate = timestamp;
-                this.selectedDateRange = Object.assign({}, this.selectedDateRange);
+                this.set('selectedDateRange.startDate',timestamp);
+                //this.selectedDateRange = Object.assign({}, this.selectedDateRange);
             }
         }
 
@@ -137,8 +149,8 @@
             if (timestamp != null) {
                 let formattedDateStr = this.getFormattedDateString(timestamp);
                 this.set('formattedEndDate',formattedDateStr);
-                this.selectedDateRange.endDate = timestamp;
-                this.selectedDateRange = Object.assign({}, this.selectedDateRange);
+                this.set('selectedDateRange.endDate', timestamp);
+                //this.selectedDateRange = Object.assign({}, this.selectedDateRange);
             }
         }
         getFormattedDateString(timestamp) {
