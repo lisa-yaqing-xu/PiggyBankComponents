@@ -10,7 +10,6 @@
                 },
                 selectedEndDate: {
                     type: Object,
-                    observer: "_selectedEndDateChange"
                 },
                 formattedStartDate: {
                     type: String,
@@ -53,9 +52,7 @@
             this.domCache = {};
             this.tappedStatus = {};
             this.calendarTapped = {};
-            console.log(this.selectedDateRange);
             this.selectedDateRange = this.selectedDateRange || {test: true};
-            console.log(this.selectedDateRange);
             
             window.addEventListener('click', (e) => {                
                 let domCache = this.getDomCache();
@@ -141,6 +138,7 @@
                 let formattedDateStr = this.getFormattedDateString(timestamp);
                 this.set('formattedStartDate',formattedDateStr);
                 this.set('selectedDateRange.startDate',timestamp);
+                this.dispatchEvent(new CustomEvent('PBSelectedDateChanged', {detail:this.selectedDateRange}));
                 //this.selectedDateRange = Object.assign({}, this.selectedDateRange);
             }
         }
@@ -150,6 +148,7 @@
                 let formattedDateStr = this.getFormattedDateString(timestamp);
                 this.set('formattedEndDate',formattedDateStr);
                 this.set('selectedDateRange.endDate', timestamp);
+                this.dispatchEvent(new CustomEvent('PBSelectedDateChanged', {detail:this.selectedDateRange}));
                 //this.selectedDateRange = Object.assign({}, this.selectedDateRange);
             }
         }

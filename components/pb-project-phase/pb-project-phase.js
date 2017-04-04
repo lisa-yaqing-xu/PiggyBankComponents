@@ -60,10 +60,10 @@
             let previouslySelectedPhase = this.shadowRoot.querySelector('.phase.selected');
             let newSelectedPhase = event.currentTarget;
             let selectedPhaseName = event.target.getAttribute('data-phaseName');
-            console.log(previouslySelectedPhase);
-            previouslySelectedPhase.classList.remove("selected");
-            newSelectedPhase.classList.add("selected");
+            if(previouslySelectedPhase) previouslySelectedPhase.classList.remove("selected");
+            if(newSelectedPhase) newSelectedPhase.classList.add("selected");
             this.set('selectedPhase', selectedPhaseName);
+            this.dispatchEvent(new CustomEvent('PBPhaseChanged', {detail: {phase: this.selectedPhase}}));
         }
 
     }

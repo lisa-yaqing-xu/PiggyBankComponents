@@ -1,5 +1,4 @@
 (function () {
-    console.log('colorpicker loaded');
     class PBColorPicker extends Polymer.Element {
 
         static get is() { return 'pb-color-picker'; }
@@ -10,6 +9,10 @@
                     type: String,
                     notify: true,
                     value: null
+                },
+                selectedColorOutput: { //for angular 2way databinding purposes
+                    type: Object,
+                    notify: true
                 },
                 colorOpts: {
                     type: Array,
@@ -31,12 +34,13 @@
         constructor() {
             super();
         }
-        connectedCallback(){
+        connectedCallback() {
             super.connectedCallback();
-            if(!this.selectedColor){
-                this.set('selectedColor',this.colorOpts[0]);
-                console.log(this.selectedColor);
-            }
+            Polymer.RenderStatus.beforeNextRender(this, function () {
+                if (!this.selectedColor) {
+                    this.setColor(this.colorOpts[0]);
+                }
+            });
         }
 
         setBGColor(color) {
@@ -45,11 +49,16 @@
 
         selectColor(e) {
             let color = e.target.getAttribute('data-color');
-            this.selectedColor = color;
+            this.setColor(color)
         }
 
-        getClass(color, selectedColor){
-            return (color === selectedColor)?'pb-color-icon selected':'pb-color-icon';
+        setColor(color) {
+            this.set('selectedColor', color);
+            if (this.selectedColorOutput) this.set('selectedColorOutput.color', color);
+            this.dispatchEvent(new CustomEvent('PBColorChanged', {detail: {color: color}}));
+        }
+        getClass(color, selectedColor) {
+            return (color === selectedColor) ? 'pb-color-icon selected' : 'pb-color-icon';
         }
 
     }

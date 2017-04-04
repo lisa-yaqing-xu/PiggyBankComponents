@@ -58,7 +58,6 @@
             this.placeholderDates = {};
             this.data = [];
             this.d3Cache = {};
-            console.log('asdf')
         }
 
         connectedCallback() {
@@ -83,12 +82,10 @@
         getViewPort() { return this.shadowRoot.getElementById('chart-viewport') }
 
         _dataChanged(newData) {
-            console.log('data',newData);
             this.updateData();
         }
 
         _placeholderChanged(newData) {
-            console.log('placeholder', newData);
             this.updateData();
         }
 
@@ -103,7 +100,6 @@
                     if (this.placeholderData[field] != null) return true;
                     else return has || false;
                 }, false) : false;
-            console.log(hasData);
             if (hasData) {
                 this.updateData();
             }
