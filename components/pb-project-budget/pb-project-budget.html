@@ -3,7 +3,6 @@
 <dom-module id="pb-project-budget">
     <template>
         <style>
-
             :host {
                 display: block;
                 font-family: 'CA Sans', 'Helvetica', 'sans-serif';
@@ -13,17 +12,52 @@
                 position: relative;
                 padding: 10px;
                 box-sizing: border-box;
+                font-weight: 900;
+                text-align: center;
+                background-color: #FFFFFF;
+                width: 100%;
             }
             .card-wrapper {
+                padding: 25px 10px 45px 10px;
                 height: auto;
                 border: 1px solid #EAE8F0;
             }
 
+            .card-wrapper h1 {
+                font-size: 4em;
+                margin-bottom: 0;
+                white-space: pre-wrap; /* css-3 */
+                white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+                white-space: -pre-wrap; /* Opera 4-6 */
+                white-space: -o-pre-wrap; /* Opera 7 */
+                word-wrap: break-word;
+            }
+
+            .card-wrapper h1 span:focus{
+                outline: none;
+                background: #eeeeee;
+            }
+        
+            .card-wrapper input{
+                width: 60%;
+                font-size: 2.5em;
+                margin-bottom: 0;
+            
+            }
+
+            .card-wrapper p {
+                margin-top: 0;
+                font-size: 1.5em;
+                color: #7A7A88;
+            }
+
         </style>
         <div id='pb-project-budget'>
-            <h2>Budget</h1>
+            <h2>Budget</h2>
             <div class="card-wrapper">
-                <pb-card label={{label}} cost={{cost}}></pb-card>
+                <h1>$<span id='budget-input' contentEditable=true>0</span></h1>
+                <!--<input>-->
+                <p>{{label}}</p>
             </div>
         </div>
     </template>
