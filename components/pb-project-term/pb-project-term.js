@@ -21,7 +21,6 @@
                 },
                 selectedDateRange: {
                     type: Object,
-                    value: {},
                     notify: true
                 },
                 calendarStartOpenDate: {
@@ -49,10 +48,12 @@
 
         constructor() {
             super();
+
+            //this ensures each projectTerm initializes with separate object references to other projectTerms
             this.domCache = {};
             this.tappedStatus = {};
             this.calendarTapped = {};
-            this.selectedDateRange = this.selectedDateRange || {test: true};
+            this.selectedDateRange = this.selectedDateRange || {};
             
             window.addEventListener('click', (e) => {                
                 let domCache = this.getDomCache();
