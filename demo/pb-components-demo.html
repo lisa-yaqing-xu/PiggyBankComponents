@@ -2,6 +2,7 @@
 <link rel="import" href="../testing-data/pb-data-faker.html">
 <link rel="import" href="../components/pb-color-picker/pb-color-picker.html">
 <link rel="import" href="../components/pb-time-series-chart/pb-time-series-chart.html">
+<link rel="import" href="../components/pb-project-detail-chart/pb-project-detail-chart.html">
 <link rel="import" href="../components/pb-calendar/pb-calendar.html">
 <link rel="import" href="../components/pb-project-term/pb-project-term.html">
 <link rel="import" href="../components/pb-card/pb-card.html">
@@ -33,8 +34,12 @@
             }
 
         </style>
+        <div class='test'>
+            {{test()}}
+        </div>
         <button on-click='generateNewChartData'>Change Data</button> <button on-click='generatePlaceHolderData'>Create Simulated Placeholder</button>
         <pb-time-series-chart data={{chartData}} add-proj-mode=true placeholder-dates={{placeholderData}} placeholder-color={{selectedColor}}></pb-time-series-chart>
+        <pb-project-detail-chart data={{projectData}}></pb-project-detail-chart>
         <div class='row'>
             <pb-color-picker selected-color={{selectedColor}}></pb-color-picker>
         </div>
@@ -76,6 +81,11 @@
                             notify: true,
                             value: PBProjectWidgetTestDataFaker.fakeDataGenerator.generateStore(10)
                         },
+                        projectData: {
+                            type: Object,
+                            notify: true,
+                            value: PBProjectWidgetTestDataFaker.fakeDataGenerator.generateStore(1)[0]
+                        },
                         monthTimestamp: {
                             type: Number,
                             notify: true,
@@ -109,6 +119,7 @@
                             value:null,
                             notify:true
                         }
+                        
                     }
                 }
 
@@ -132,6 +143,9 @@
                     }
                     else  this.selectedDate = null;
 
+                }
+                test(){
+                    return 'testing123'
                 }
             }
             customElements.define(PBComponentsDemo.is, PBComponentsDemo);

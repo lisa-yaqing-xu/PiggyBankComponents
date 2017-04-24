@@ -162,7 +162,7 @@
             let height = sortedData.length * 20 + 50;
             this.setViewPortSVGSize(elementCache.svg, width, height);
 
-            let { axis: xAxis, scale: xScale } = this.createXAxis(data, viewport.clientWidth);
+            let { axis: xAxis, scale: xScale } = this.createXAxis(data, width);
             this.renderTodayMarker(elementCache.todayG, xScale, height);
             this.formatAxis(elementCache.axisG, height, xAxis, xScale);
 
