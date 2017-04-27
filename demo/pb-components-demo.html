@@ -6,7 +6,8 @@
 <link rel="import" href="../components/pb-calendar/pb-calendar.html">
 <link rel="import" href="../components/pb-project-term/pb-project-term.html">
 <link rel="import" href="../components/pb-card/pb-card.html">
-<link rel="import" href="../components/pb-table/pb-table.html">
+<link rel="import" href="../components/pb-project-table/pb-project-table.html">
+<link rel="import" href="../components/pb-resource-table/pb-resource-table.html">
 <link rel="import" href="../components/pb-project-name/pb-project-name.html">
 <link rel="import" href="../components/pb-project-phase/pb-project-phase.html">
 <link rel="import" href="../components/pb-project-budget/pb-project-budget.html">
@@ -22,17 +23,16 @@
             text {
                 font-family: 'CA Sans', 'Helvetica', 'sans-serif';
             }
-
+            
             .container {
                 width: 45%;
                 vertical-align: top;
                 display: inline-block;
             }
-
+            
             .row {
                 margin-bottom: 30px;
             }
-
         </style>
         <div class='test'>
             {{test()}}
@@ -40,6 +40,12 @@
         <button on-click='generateNewChartData'>Change Data</button> <button on-click='generatePlaceHolderData'>Create Simulated Placeholder</button>
         <pb-time-series-chart data={{chartData}} add-proj-mode=true placeholder-dates={{placeholderData}} placeholder-color={{selectedColor}}></pb-time-series-chart>
         <pb-project-detail-chart data={{projectData}}></pb-project-detail-chart>
+        <div class='row'>
+            <pb-project-table data={{chartData}}></pb-project-table>
+        </div>
+        <div class='row'>
+            <pb-resource-table data={{resourceData}}></pb-resource-table>
+        </div>
         <div class='row'>
             <pb-color-picker selected-color={{selectedColor}}></pb-color-picker>
         </div>
@@ -59,13 +65,12 @@
                 <pb-project-budget cost=123456789></pb-project-budget>
             </div>
         </div>
-<button on-click='updateSelectedDate'>changeDate</button>
+        <button on-click='updateSelectedDate'>changeDate</button>
         <pb-calendar month-timestamp={{monthTimestamp}} selected-date={{selectedDate}}></pb-calendar>
-        
-        <pb-table headers={{tableHeaders}} data={{tableData}}></pb-table>
     </template>
     <script>
         (function () {
+            let fdg = PBProjectWidgetTestDataFaker.fakeDataGenerator;
             class PBComponentsDemo extends Polymer.Element {
 
                 static get is() { return 'pb-components-demo'; }
@@ -79,12 +84,24 @@
                         chartData: {
                             type: Array,
                             notify: true,
-                            value: PBProjectWidgetTestDataFaker.fakeDataGenerator.generateStore(10)
+                            value: fdg.generateStore(10)
                         },
                         projectData: {
                             type: Object,
                             notify: true,
-                            value: PBProjectWidgetTestDataFaker.fakeDataGenerator.generateStore(1)[0]
+                            value: fdg.generateStore(1)[0]
+                        },
+                        resourceData:{
+                            type: Array,
+                            notify: true,
+                            value: function(){
+                                let resources = [];
+                                for(let i = 0; i < 10; i++){
+                                    resources.push(fdg.generateFakeResource());
+                                }
+                                console.log(resources);
+                                return resources;
+                            }()
                         },
                         monthTimestamp: {
                             type: Number,
@@ -114,12 +131,12 @@
                         selectedPhase: {
                             type: String
                         },
-                        selectedColor:{
-                            type:String,
-                            value:null,
-                            notify:true
+                        selectedColor: {
+                            type: String,
+                            value: null,
+                            notify: true
                         }
-                        
+
                     }
                 }
 
@@ -141,11 +158,11 @@
                         let day = Math.floor(Math.random() * 28) + 1;
                         this.selectedDate = new Date(year, month, day);
                     }
-                    else  this.selectedDate = null;
+                    else this.selectedDate = null;
 
                 }
-                test(){
-                    return 'testing123'
+                test() {
+                    return `<div>test342424</div>`;
                 }
             }
             customElements.define(PBComponentsDemo.is, PBComponentsDemo);
