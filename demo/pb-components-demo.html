@@ -18,7 +18,7 @@
              :host {
                 display: block;
             }
-            
+
             text {
                 font-family: 'CA Sans', 'Helvetica', 'sans-serif';
             }
@@ -32,124 +32,33 @@
             .row {
                 margin-bottom: 30px;
             }
-
         </style>
-        <div class='test'>
-            {{test()}}
+        <h1>PiggyBank Components Demo Page</h1>
+        <div>
+            <button on-click='generateNewChartData'>Generate New Data Set</button> <button>Create New Project</button>
+            <pb-time-series-chart data={{chartData}}></pb-time-series-chart>
+            <pb-table headers={{tableHeaders}} data={{chartData}}></pb-table>
+
         </div>
-        <button on-click='generateNewChartData'>Change Data</button> <button on-click='generatePlaceHolderData'>Create Simulated Placeholder</button>
-        <pb-time-series-chart data={{chartData}} add-proj-mode=true placeholder-dates={{placeholderData}} placeholder-color={{selectedColor}}></pb-time-series-chart>
-        <pb-project-detail-chart data={{projectData}}></pb-project-detail-chart>
-        <div class='row'>
-            <pb-color-picker selected-color={{selectedColor}}></pb-color-picker>
-        </div>
-        <div class="row">
-            <div class="container">
-                <pb-project-term selected-date-range={{placeholderData}}></pb-project-term>
+        <div>
+            <button>Add Project</button><button>Cancel<button>
+            <pb-time-series-chart data={{chartData}} add-proj-mode=true placeholder-dates={{placeholderData}} placeholder-color={{selectedColor}}></pb-time-series-chart>
+            <div class='row'>
+                <pb-color-picker selected-color={{selectedColor}}></pb-color-picker>
             </div>
-            <div class="container">
-                <pb-project-name project-name="PiggyBank"></pb-project-name>
-            </div>
-        </div>
-        <div class="row bottom">
-            <div class="container phase">
-                <pb-project-phase phase="seed2" selected-phase={{selectedPhase}}></pb-project-phase>
-            </div>
-            <div class="container">
-                <pb-project-budget cost=123456789></pb-project-budget>
+            <div class="row">
+                <div class="container">
+                    <pb-project-term selected-date-range={{placeholderData}}></pb-project-term>
+                </div>
+                <div class="container">
+                    <pb-project-name project-name="PiggyBank"></pb-project-name>
+                </div>
             </div>
         </div>
-<button on-click='updateSelectedDate'>changeDate</button>
-        <pb-calendar month-timestamp={{monthTimestamp}} selected-date={{selectedDate}}></pb-calendar>
-        
-        <pb-table headers={{tableHeaders}} data={{tableData}}></pb-table>
+
+
     </template>
-    <script>
-        (function () {
-            class PBComponentsDemo extends Polymer.Element {
-
-                static get is() { return 'pb-components-demo'; }
-
-                constructor() {
-                    super();
-                }
-
-                static get properties() {
-                    return {
-                        chartData: {
-                            type: Array,
-                            notify: true,
-                            value: PBProjectWidgetTestDataFaker.fakeDataGenerator.generateStore(10)
-                        },
-                        projectData: {
-                            type: Object,
-                            notify: true,
-                            value: PBProjectWidgetTestDataFaker.fakeDataGenerator.generateStore(1)[0]
-                        },
-                        monthTimestamp: {
-                            type: Number,
-                            notify: true,
-                            value: 1458975342788
-                        },
-                        placeholderData: {
-                            type: Object,
-                            notify: true,
-                            value: {}
-                        },
-                        tableData: {
-                            type: Array,
-                            notify: true,
-                            value: PBProjectWidgetTestDataFaker.projectData
-                        },
-                        tableHeaders: {
-                            type: Array,
-                            notify: true,
-                            value: ['Color', 'Project Name', 'Forecasted', 'Actual', '# of People', 'Start Date', 'End Date']
-                        },
-                        selectedDate: {
-                            type: Object,
-                            notify: true,
-                            value: null
-                        },
-                        selectedPhase: {
-                            type: String
-                        },
-                        selectedColor:{
-                            type:String,
-                            value:null,
-                            notify:true
-                        }
-                        
-                    }
-                }
-
-                generateNewChartData() {
-                    this.chartData = PBProjectWidgetTestDataFaker.fakeDataGenerator.generateStore(10);
-                }
-
-                generatePlaceHolderData() {
-                    let newData = PBProjectWidgetTestDataFaker.fakeDataGenerator.generateStore(1)[0];
-                    this.set('placeholderData', {
-                        startDate: newData.projectedStartDate,
-                        endDate: newData.projectedEndDate,
-                    });
-                }
-                updateSelectedDate() {
-                    if (Math.random() > 0.1) {
-                        let year = Math.floor(Math.random() * 6) + 2012;
-                        let month = Math.floor(Math.random() * 12);
-                        let day = Math.floor(Math.random() * 28) + 1;
-                        this.selectedDate = new Date(year, month, day);
-                    }
-                    else  this.selectedDate = null;
-
-                }
-                test(){
-                    return 'testing123'
-                }
-            }
-            customElements.define(PBComponentsDemo.is, PBComponentsDemo);
-        })();
+    <script src='pb-components-demo.js'>     
     </script>
 
 </dom-module>
