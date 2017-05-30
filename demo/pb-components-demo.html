@@ -6,7 +6,7 @@
 <link rel="import" href="../components/pb-calendar/pb-calendar.html">
 <link rel="import" href="../components/pb-project-term/pb-project-term.html">
 <link rel="import" href="../components/pb-card/pb-card.html">
-<link rel="import" href="../components/pb-table/pb-table.html">
+<link rel="import" href="../components/pb-project-table/pb-project-table.html">
 <link rel="import" href="../components/pb-project-name/pb-project-name.html">
 <link rel="import" href="../components/pb-project-phase/pb-project-phase.html">
 <link rel="import" href="../components/pb-project-budget/pb-project-budget.html">
@@ -17,16 +17,57 @@
         <style>
              :host {
                 display: block;
+                width: 100%;
+                font-family: 'Helvetica', 'sans-serif';
             }
 
             text {
-                font-family: 'CA Sans', 'Helvetica', 'sans-serif';
+                font-family: 'Helvetica', 'sans-serif';
+            }
+            h1{
+                text-align: center;
+            }
+            .button-set{
+                text-align: center;
+                padding-bottom: 10px;
             }
 
+            button{
+                padding: 10px;
+                color: #fff;
+                background: #9013FE;
+                transition: background-color .5s;
+                border-radius: 5px;
+                border: 0;
+                font-size: 16px;
+                margin: 5px;
+
+            }
+
+            button:hover{
+                background: #7E00ED;
+            }
+
+            button:focus{
+                outline:none;
+            }
+            .view{
+                width: 60%;
+                max-width: 800px;
+                min-width: 320px;
+                margin: 0 auto;
+                display: none;
+            }
+            .view.show{
+                display:block;
+            }
             .container {
                 width: 45%;
                 vertical-align: top;
                 display: inline-block;
+            }
+            .error-msg{
+                text-align: center;
             }
 
             .row {
@@ -34,24 +75,27 @@
             }
         </style>
         <h1>PiggyBank Components Demo Page</h1>
-        <div>
-            <button on-click='generateNewChartData'>Generate New Data Set</button> <button>Create New Project</button>
+        <div class$='{{getViewerClasses(showEditor)}}'>
+           <div class='button-set'> <button on-click='generateNewChartData'>Generate New Data Set</button>
+           <button on-click='enterAddMode'>Create New Project</button></div>
             <pb-time-series-chart data={{chartData}}></pb-time-series-chart>
-            <pb-table headers={{tableHeaders}} data={{chartData}}></pb-table>
+            <pb-project-table data={{chartData}}></pb-table>
 
         </div>
-        <div>
-            <button>Add Project</button><button>Cancel<button>
+        <div class$='{{getEditorClasses(showEditor)}}'>
+           <div class='button-set'> <button on-click='mockCreateNewProject'>Add Project</button>
+           <button on-click='exitAddMode'>Cancel</button></div>
+           <div class=error-msg>{{addErrorMsg}}</div>
             <pb-time-series-chart data={{chartData}} add-proj-mode=true placeholder-dates={{placeholderData}} placeholder-color={{selectedColor}}></pb-time-series-chart>
             <div class='row'>
                 <pb-color-picker selected-color={{selectedColor}}></pb-color-picker>
             </div>
             <div class="row">
                 <div class="container">
-                    <pb-project-term selected-date-range={{placeholderData}}></pb-project-term>
+                    <pb-project-term id='date-picker' selected-date-range={{placeholderData}}></pb-project-term>
                 </div>
                 <div class="container">
-                    <pb-project-name project-name="PiggyBank"></pb-project-name>
+                    <pb-project-name project-name="{{projectName}}"></pb-project-name>
                 </div>
             </div>
         </div>

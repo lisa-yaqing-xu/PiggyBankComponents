@@ -91,7 +91,6 @@
                 .attr('class', 'x axis');
 
             this.formatAxis(axisG, height, xAxis, xScale);
-
             let chartG = this.createShapeGroups(renderSVG);
 
             this.renderElements(data, xScale, chartG);

@@ -4,9 +4,6 @@
 
         static get is() { return 'pb-components-demo'; }
 
-        constructor() {
-            super();
-        }
 
         static get properties() {
             return {
@@ -45,42 +42,124 @@
                     notify: true,
                     value: null
                 },
-                selectedPhase: {
-                    type: String
-                },
                 selectedColor: {
                     type: String,
                     value: null,
                     notify: true
+                },
+                projectName: {
+                    type: String,
+                    value: null,
+                    notify: true
+                },
+                addErrorMsg:{
+                    type: String, 
+                    value: null
+                },
+                showEditor:{
+                    type: Boolean,
+                    value: false
                 }
 
             }
         }
 
+
+
+        static get observers(){
+            return [
+                '_projectNameChanged(projectName)',
+                '_selectedColorChanged(selectedColor)',
+                '_selectedDateChanged(selectedDate)'
+            ]
+        }
+
+        constructor() {
+            super();
+            this.selectedDate = {};
+        }
+
+        connectedCallback() {
+            super.connectedCallback();
+            Polymer.RenderStatus.beforeNextRender(this, function () {
+               let datePicker = this.shadowRoot.getElementById('date-picker'); 
+               datePicker.addEventListener('PBSelectedDateChanged',(event)=>{
+                   //this is actually designed to be used with angular, so it's a little finagly here.
+                   this.placeholderData = Object.assign({}, this.placeholderData);
+               })
+            });
+
+        }
         generateNewChartData() {
             this.chartData = PBProjectWidgetTestDataFaker.fakeDataGenerator.generateStore(10);
         }
 
-        generatePlaceHolderData() {
-            let newData = PBProjectWidgetTestDataFaker.fakeDataGenerator.generateStore(1)[0];
-            this.set('placeholderData', {
-                startDate: newData.projectedStartDate,
-                endDate: newData.projectedEndDate,
-            });
+        enterAddMode(){
+            this.showEditor = true;
+            window.dispatchEvent(new Event('resize'));
         }
-        updateSelectedDate() {
-            if (Math.random() > 0.1) {
-                let year = Math.floor(Math.random() * 6) + 2012;
-                let month = Math.floor(Math.random() * 12);
-                let day = Math.floor(Math.random() * 28) + 1;
-                this.selectedDate = new Date(year, month, day);
+        exitAddMode(){
+            this.placeholderData = {};
+            this.showEditor = false;
+            this.addErrorMsg = null;
+            window.dispatchEvent(new Event('resize'));
+        }
+        mockCreateNewProject(){
+            let isValid = this.validate();
+            if (!isValid){
+                this.set('addErrorMsg', 'Invalid Input');
+                return;
             }
-            else this.selectedDate = null;
+            let newData = this.placeholderData;
+            let newChartItem = {
+                projectedStartDate: newData.startDate.getTime(),
+                projectedEndDate: newData.endDate.getTime(),
+                realStartDate: newData.startDate.getTime(),
+                realEndDate: newData.endDate.getTime(),
+                id: newData.name,
+                name: newData.name,
+                fill: newData.color,
+                numPeople: 0,
+                forecastedCost: 0,
+                actualCost: 0
+            };
+            this.chartData.push(newChartItem);
+            this.chartData = Object.assign([],this.chartData);
+            
+            this.exitAddMode();
+        }
 
+        validate(){
+            let newData = this.placeholderData;
+            
+            return !(!newData.startDate || !newData.endDate ||  (newData.startDate > newData.endDate) || !newData.color || !newData.name);
+            
         }
-        test() {
-            return 'testing123'
+
+        getEditorClasses(checker){
+            return (checker)?'view show':'view';
         }
+
+        getViewerClasses(checker){
+            return (checker)?'view':'view show';
+        }
+
+        _projectNameChanged(projectName){
+            //does not trigger update, we do not need this to trigger update in the charts
+            this.placeholderData.name = projectName;  
+            console.log(this.placeholderData); 
+        }
+
+        _selectedColorChanged(selectedColor){
+            //same above
+            this.placeholderData.color = selectedColor;
+        }
+
+        _selectedDateChanged(selectedDate){
+            console.log(selectedDate);
+        }
+
+
     }
     customElements.define(PBComponentsDemo.is, PBComponentsDemo);
 })();
